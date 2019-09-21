@@ -1,0 +1,161 @@
+#+TITLE : Prise de notes CM 4I500 ALGAV
+#+PROPERTY: header-args :mkdirp yes
+#+STARTUP: inlineimages
+
+Antoine Genitrini (antoine.genitrini@sorbonne-universite.fr)
+4I500
+
+UE d'ouverture : fascicule de prérequis
+
+* Informations pratiques
+
+www.lip6.fr/Antoine.Genitrini
+
+Amphi 45B
+
+Evaluation :
+0.2 Examen Réparti 1 + 0.2 Rendu Devoir de programmation + 0.6 Examen réparti 2
+
+Devoir de programmation :
+Suite du cours avec Binh Minh Bui Xuan
+
+Cours d'ouverture inclus [[./CM0/cours0.pdf][ici]]
+
+Cours d'algorithmique simple : 3I003 
+Fanny Pascual
+
+** Prérequis
+
+Il faut connaître :
+- Notions de complexité, tri de liste (tri rapide, tri fusion)
+- Complexité au pire cas
+- Complexité en moyenne
+
+On va surtout voir :
+- Complexité en coût amorti
+
+** Plan du cours
+
+*** Structures arborescentes : files de priorité
+
+Coût au pire cas n'est plus la mesure à suivre (ça l'était en licence)
+Coût amorti != coût moyen
+
+Coût de complexité en moyenne
+
+*** Structures arborescentes pour la recherche
+
+Recherche externe
+Tries, arbres digitaux (texte)
+
+*** Géométrie Algorithmique
+
+Problème de collision d'objet.
+
+*** Méthodes de Hachage
+
+Fonction de hachage. Permet de récupérer une valeur en temps constant.
+
+** Références
+
+Froidevaux, Gaudel, Soria, _Types de données et algorithmique_
+(Soria ancienne prof ici)
+
+(Disponicle en ligne)
+Beauquier, Berstel, Chrétienne, _Élements d'algorithmique_
+Crochemore, Hancart, Lecroq, _Algorithmique du texte_
+
+* Cours 1 : 16/09/2019
+
+** Chapitre 0
+
+*** Notion de complexité
+
+#+BEGIN_DEFINITION
+Soit n la taille de l'entrée, et k une constante.
+
+P : Se dit des problèmes qui se calculent en temps polynomial O(n^k)
+EXP : Se calculent en temps exponentiel O(2^n)
+NP : intermédiaire (Est-ce que les problèmes intermédiaires sont des problèmes P ou des problèmes NP-difficiles)
+#+END_DEFINITION
+
+On ne parlera pas des problèmes exponentiels.
+
+Exemples de problèmes polynômiaux : tri, recherche, géométrie, texte, arithmétique.
+
+*** Analyse d'algorithmes
+
+Il faut définir une notion de taille (pas univoque, on peut en définir plusieurs).
+
+Pour donner une complexité (nlog(n)), il faut donner aussi l'opération effectuée (permutation, etc...)
+
+L'opération fondamentale doit être explicitée pour pouvoir permettre les comparaisons.
+
+Plusieurs choses peuvent être comparées :
+- Dans le meilleur des cas : min{ T_A(e) ; e \in E_n}
+- Dans le pire des cas : max{ T_A(e) ; e \in E_n}
+- En moyenne : 1 / (|E_n|) * \sum_{e \in E_n} T_A(e)
+
+#+BEGIN_QUOTE
+On pourrait à la limite donner une distribution de probabilité (et pas seulement un moment) d'un algorithme.
+#+END_QUOTE
+
+On introduit une nouvelle notion : complexité amortie, définie comme le coût d'une suite d'opération (donc moyenne des coûts )
+
+*** Notions de mathématiques
+
+On définit les trois notions principales :
+
+Ordres de grandeur asymptotique. [Insérer en latex]
+
+Comparaisons d'ordre de grandeur. [Insérer image]
+
+** Chapitre 1 : Files de priorité
+
+Complexité amortie : On est au plus proche de ce qui se passe en pratique.
+
+Interclassement de liste : linéaire en la somme des tailles des deux listes.
+
+*** Opérations de files de priorité
+
+Ensemble d'éléments, chaque d'élément identifié par une clé, on veut trouver le minimum des clés. (typiquement une valeur de priorité pour un ordonnanceur)
+
+Il faut un ordre total : on doit pouvoir comparer toujours deux éléments : on doit pouvoir dire cet élément-ci est plus petit/ égal/ plus grand que celui-là.
+
+
+Opérations :
+
+- On veut pouvoir ajouter un élément
+- Supprimer l'élément de plus petite clé
+- Construire une file avec n éléments reçus à la volée
+- Union de plusieurs files de priorités
+- Modification d'une clé
+
+*** Tas
+
+Un tas minimum : [insérer image]
+
+Ensemble de valeurs distinctes deux à deux sous la forme d'un arbre. Contrainte : si on part de la racine vers les feuilles, tous les chemins possibles sont des suites strictement croissantes.
+
+Trier un tas minimum est non-trivial (pas en temps linéaire).
+
+On peut le construire en temps n, *donc* on le trie au moins en temps nlog(n)
+
+*** Représentations des données et efficacité
+
+[insérer tableau de comparaison]
+[expliquer algorithme du tas, insertion]
+
+*** Exemples
+
+- Tri par tas (au lieu d'une liste) (heapsort)
+- Sur les graphes (plus court chemin : Dijkstra ou A*), (plus court chemin entre tous les couples de sommets : Johnson), (arbre couvrant minimal : Prim)
+- Interclassement de listes triées
+- Compression de Huffmann
+
+* Annexes
+
+
+
+
+
