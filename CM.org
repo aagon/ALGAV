@@ -65,6 +65,162 @@ Froidevaux, Gaudel, Soria, _Types de données et algorithmique_
 Beauquier, Berstel, Chrétienne, _Élements d'algorithmique_
 Crochemore, Hancart, Lecroq, _Algorithmique du texte_
 
+
+* Cours 0 : Cours d'ouverture, rappels
+
+Ce cours présente un certain nombre d'algorithmes et de concepts d'analyse.
+
+Les algorithmes seront écrits en C plutôt qu'en pseudo-langage.
+
+** Le tri-insertion
+
+Cet algorithme n'est pas du type "diviser pour régner", on parle donc d'algorithme naïf.
+
+#+BEGIN_SRC c :tangle ./CM0/triinsertion.c
+  #include <stdio.h>
+  #include <stdlib.h>
+
+  void inserer(int T[], int x, int e);
+  void TriInserRec(int T[], int d, int f);
+  void TriInserIter(int T[], int d, int f);
+  void printTableau(int T[], int size);
+
+  int main()
+  {
+	  int T[10] = {0};
+
+	  // On définit la sentinelle : à défaut de l'infini, on met le plus petit nombre écrivable sur 4 octets
+	  T[0] = -2147483648;
+
+	  // On peuple le tableau
+	  T[1] = 20;
+	  T[2] = 19;
+	  T[3] = 18;
+	  T[4] = 17;
+	  T[5] = 2;
+	  T[6] = 14;
+	  T[7] = 9;
+	  T[8] = 3;
+	  T[9] = 1;
+
+	  printTableau(T, 10);
+
+	  /* TriInserRec(T, 1, 10); */
+	  TriInserIter(T, 1, 10);
+
+	  printTableau(T, 10);
+
+	  return 0;
+  }
+
+  void inserer(int T[], int x, int e)
+  {
+	  int k = e;
+
+	  while (T[k] > x) {
+		  T[k+1] = T[k];
+		  k--;
+	  }
+
+	  T[k+1] = x;
+  }
+
+  // On a le choix entre la version récursive et itérative. On se permet d'implémenter les deux
+  // Même si on ne se permettra pas d'utiliser la récursive
+
+  void TriInserRec(int T[], int d, int f)
+  {
+	  if (d < f) {
+		  TriInserRec(T, d, f - 1);
+		  inserer(T, T[f], f - 1);
+	  }
+  }
+
+  void TriInserIter(int T[], int d, int f)
+  {
+	  for (int i = d + 1; i < f; ++i) {
+		  inserer(T, T[i], i - 1);
+	  }
+  }
+
+  void printTableau(int T[], int size)
+  {
+	  for (int i = 0; i < size; ++i) {
+		  printf("%d ", T[i]);
+	  }
+
+	  printf("\n");
+  }
+#+END_SRC
+
+On part du principe qu'une partie de la liste est déjà triée de 0 à e, sans perte de généralité.
+
+On prend l'élément d'indice e+1, et on le met en place en comparant de manière successive à tous les éléments à sa gauche.
+
+Et on recommence jusqu'à arriver à la fin : e = size - 1.
+
+*** Analyse de l'algorithme
+
+**** Analyse en terminaison
+
+On a bien un algorithme qui se termine : La boucle while de la fonction inserer a un nombre fini d'itérations (l'incrémentation est vers le bas, la barrière est "en bas").
+
+La condition d'arrêt de la fonction TriInserRec finit toujours par être remplie : la variable f est décrémentée, la condition d'arrêt est de la forme f > qqch.
+
+La boucle for de la fonction TriInserIter s'arrête forcément : la condition d'arrêt est de la forme i < qqch, et i est incrémentée.
+
+**** Analyse en validité
+
+A la fin d'une invocation de la fonction inserer, on a e + 1 éléments triés (si on partait du principe qu'on en avait e avant). A la fin de l'algorithme, e + 1 égale la taille du tableau, ce qui une autre manière de dire que le tableau est totalement trié.
+
+**** Analyse en complexité
+
+La fonction inserer fait au pire e + 1 comparaisons. e étant itéré de 0 à n-1 (n la taille du tableau), on a le nombre total de comparaisons donné par :
+
+$\sum_{i=2}^{n}i$
+
+Ce qui donne : $\frac{n(n+1)}{2} - 1$
+
+L'algorithme du tri-insertion est donc au pire quadratique.
+
+** Tri rapide
+
+Cet algorithme est du type "diviser pour régner" : on se propose de découper un problème en problèmes plus petits, de les résoudre puis de les combiner.
+
+*** Comportement asymptotique
+
+On doit donner un certain nombres de concepts pour pouvoir correctement caractériser le comportement asymptotique d'un algorithme.
+
+#+BEGIN_DEFINITION
+Soit $\mathcal{F}_{\mathcal{N}}$ l'ensemble des fonctions de $\mathbb{N}$ dans $\mathbb{R}^{+}$.
+
+Soient $f$ et $g$ deux fonctions de $\mathcal{F}_{\mathcal{N}}$.
+
+On dit que $f$ est dominée par $g$ au voisinage de l'infini (ou encore que $g$ est une borne asymptotique supérieure de $f$) sssi :
+
+$\exists c, n_0 > 0$ tels que $\forall n > n_0$, on a $f(n) < cg(n)$.
+
+On peut noter $f = O(g)$ ou encore $g = \Omega(f)$, ces deux notations sont équivalentes.
+#+END_DEFINITION
+
+#+BEGIN_DEFINITION
+On dira que $f$ et $g$ sont semblables au voisinage de l'infini (ou encore que $g$ est une borne asymptotique approchée de $f$) sssi $f$ est dominée par $g$ et $g$ est dominée par $f$. On notera :
+
+$f = \Theta(g)$ (et donc aussi $g = \Theta(f)$)
+#+END_DEFINITION
+
+#+BEGIN_DEFINITION
+On a aussi la notation suivante :
+
+$\lim_{n \to +\infty} f(n)/g(n) = 0$ se note $f = o(g)$
+#+END_DEFINITION
+
+Le but de ces concepts est de pouvoir ramener la fonction de complexité asymptotique vers une fonction connue et écrivable, genre n, log(n), n^2, etc...
+
+*** Retour au tri rapide
+
+
+
 * Cours 1 : 16/09/2019
 
 ** Chapitre 0
