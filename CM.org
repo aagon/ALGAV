@@ -24,6 +24,8 @@ Cours d'ouverture inclus [[./CM0/cours0.pdf][ici]]
 Cours d'algorithmique simple : 3I003 
 Fanny Pascual
 
+On aura le droit aux slides, plus aux notes sur les slides, plus une copie-double manuscrite.
+
 ** Prérequis
 
 Il faut connaître :
@@ -421,6 +423,165 @@ On peut le construire en temps n, *donc* on le trie au moins en temps nlog(n)
 - Sur les graphes (plus court chemin : Dijkstra ou A*), (plus court chemin entre tous les couples de sommets : Johnson), (arbre couvrant minimal : Prim)
 - Interclassement de listes triées
 - Compression de Huffmann
+
+
+** Arbre binomial
+
+Un arbre binomial est un graphe avec une racine et des sous-branches qui sont aussi des arbres binomiaux.
+
+N'existent que si la taille est une puissance de 2.
+
+#+BEGIN_DEFINITION
+Définition par récurrence :
+
+- B_0 est l'arbre de taille 2^0, un seul noeud
+
+- Étant donné 2 arbres binomiaux B_k, on obtient B_{k+1} en faisant de l'un des B_k le premier fils (à gauche donc) à la racine de l'autre B_k.
+#+END_DEFINITION
+
+#+BEGIN_DEFINITION
+Définition par induction forte :
+
+- B_0 est l'arbre de taille 2^0, un seul noeud
+
+- Pour construire B_k, je construis une nouvelle racine et je place tous les B_{k-1}, B_{k-2}, ..., B_0 de gauche à droite.
+#+END_DEFINITION
+
+Structure dite plane : les fils sont ordonnés de gauche à droite.
+
+#+BEGIN_THEOREM
+Pour k >= 0
+
+- B_k a 2^k noeuds (par construction)
+- B_k a 2^k - 1 arêtes (suit de la précédente)
+- B_k a hauteur k (démontrable par récurrence) (hauteur = nombre d'arêtes à traverser depuis la racine vers le fils le plus à gauche)
+- Le degré à la racine (arité : nombre de fils) est k.
+- Le nombre de noeuds à profondeur i est i parmi k.
+- La forêt reliée à la racine de B_k est < B_{k-1}, B_{k-2}, ..., B_1, B_0 > (par construction)
+#+END_THEOREM
+
+[refaire les démonstrations par récurrence]
+
+#+BEGIN_DEFINITION
+Induction faible vs induction forte
+
+Induction faible : je suppose P_k vraie
+Induction forte : je suppose P_k, P_{k-1}, ..., P_0 vraies
+#+END_DEFINITION
+
+
+** File binomiale
+
+#+BEGIN_DEFINITION
+Un tournoi binomial (ou tas binomial) est un arbre binomial étiqueté croissant (croissance stricte sur tout chemin de la racine aux feuilles).
+
+En plus, on veut que toutes les étiquettes soient distinctes.
+#+END_DEFINITION
+
+#+BEGIN_DEFINITION
+Une file binomiale est une suite de tournois binomiaux de tailles strictement décroissantes.
+#+END_DEFINITION
+
+#+BEGIN_THEOREM
+Corollaire de cette définition :
+
+On peut donner une file binomiale (et une seule !) pour écrire n'importe quel nombre entier d'étiquettes. 
+
+Quand on dit une seule, c'est la structure qui est unique, pas la manière d'étiqueter la structure.
+#+END_THEOREM
+
+#+BEGIN_THEOREM
+Extension du théorème démontré en archi :
+
+n = \alpha_0 2^0 + \alpha_1 2^1 + ... + \alpha_r 2^r
+
+*Avec r = floor(log_2(n))*
+#+END_THEOREM
+
+#+BEGIN_THEOREM
+Corollaire
+
+Au plus, on a log(n) éléments dans la file. On sait que le minimum de toutes les étiquettes est à la racine d'un des éléments de la file. Donc la complexité de trouver le min dans une file binomiale est au plus d'ordre log(n).
+#+END_THEOREM
+
+
+#+BEGIN_THEOREM
+Corollaire
+
+Si n = 2^k, FB_n est un tournoi binomial.
+
+Sinon la file binomiale est une suite de tournois correspondants aux bits égaux à 1 dans la représentation binaire de n.
+#+END_THEOREM
+
+#+BEGIN_DEFINITION
+Poids de Hamming :
+
+\nu(n) = \sum_i b_i
+
+avec les b_i les bits à 1 dans la représentation binaire de n. Correspond au nombre de tournois qu'il faut pour écrire n.
+#+END_DEFINITION
+
+#+BEGIN_THEOREM
+Propriétés de FB_n
+
+- FB_n a n noeuds
+- FB_n a (n - \nu(n)) arêtes (les noeuds, moins le nombre de tournois)
+- Le plus grand arbre binomial est B_{floor(log(n))}, le premier arbre de la file binomiale. De hauteur floor(log(n)) et nombre de noeuds 2^{floor(log(n))}.
+#+END_THEOREM
+
+*** Union de files binomiales
+
+On suppose que toutes les clés sont distinctes dans les N files à unir.
+
+- Cas 1, union de 2 tournois (TB_l, TB_k) de tailles différentes :
+
+D'après notre supposition, le cardinal de l'ensemble des clés des 2 tournois est de 2^l + 2^k.
+
+On peut simplement donner F = < TB_l, TB_k >, qui est une file binomiale valable.
+
+- Cas 2, union de 2 tournois de même taille.
+
+On peut faire une file binomiale : F = TB_{k+1} qui pourra contenir toutes les étiquettes des deux tournois en entrée. Cette file binomiale doit respecter la propriété selon laquelle la racine est le plus petit élément du tournoi : on prend en fils de l'autre celui qui a la plus grande racine.
+
+- Union de 2 files binomiales correspond à une addition binaire.
+
+<TB_2, TB_0> U <TB'_2, TB'_1, TB'_0> = <TB''_3, TB''_2>
+
+**** Aparté : l'addition binaire
+
+En fait, c'est super facile de faire une addition en binaire : on peut se contenter de faire du bit par bit.
+
+1 + 0 = 0 + 1 = 1
+0 + 0 = 0
+1 + 1 = +1 au bit de gauche (au bit de poids plus fort) (et 0 au bit courant)
+
+**** Primitives
+
+Ces primitives des pages 22 et 23 sont utilisables en examen : si on les appelle dans du pseudo-code, le correcteur saura ce que ça signifie.
+
+Ces primitives peuvent aussi servir à définir des algorithmes de plus haut niveau. Si on a le temps, on pourrait implémenter ces primitives en C.
+
+**** Analyse de complexité
+
+On ne prouve pas la correction de l'algorithme (aussi vrai, ni plus ni moins, que la somme binaire).
+
+La complexité de l'union de FB_n et FB_m est en O(log_2(n+m))
+
+Critère de complexité : nombre de comparaisons entre clés (la création de pointeurs, copies de données ne comptent pas).
+
+Idée principale : L'union de deux tournois de même taille nécessite 1 comparaison entre clés et ajoute une arête dans le file résultat. (l'union de deux tournois de taille différente est triviale : tournoi+grand, tournoi-grand, et ne nécessite pas de création d'arête ni de comparaion)
+
+Conséquence : Le nombre de comparaisons égale le nombre d'arêtes de la file union moins le nombre d'arêtes des files de départ (en gros, les arêtes créées).
+
+*** Ajout d'un élément à une file
+
+La meilleure manière, c'est de créer une file binomiale contenant seulement l'élément à ajouter, puis je fais l'union.
+
+La complexité est entre 0 et \nu(n) : on a au max \nu(n) comparaisons.
+
+*** Construction
+
+Cout de la construction est le cout de la commutation de bits.
 
 
 * Annexes
