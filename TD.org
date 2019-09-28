@@ -1,0 +1,116 @@
+#+TITLE : Prise de notes CM 4I500 ALGAV
+#+PROPERTY: header-args :mkdirp yes
+#+STARTUP: inlineimages
+
+Raphaël Monat (raphael.monat@lip6.fr)
+
+* TD 1 : 26/09/2019
+
+** Exercice 1.1
+
+*** Question 1.1.1
+
+La première égalité suit du binôme de Newton, en posant a = b = 1
+
+La deuxième égalité suit de la définition des suites géométriques, et de la somme des séries. Ce résultat de la somme des séries se redémontre par récurrence faible.
+
+Ou alors, par somme téléscopique :
+
+#+BEGIN_PROOF
+$(x - 1)\sum_{i=0}^r(x^i) = x\sum_{i=0}^r(x^i) - \sum_{i=0}^r(x^i)$
+
+On développe, on change la variable à gauche, on se retrouve avec une somme téléscopique :
+
+$\sum_{i=1}^{r+1}(x^i) - \sum_{i=0}^r(x^i)$
+
+Soit :
+
+$x^{r+1} - 1$
+
+On se retrouve bien avec :
+$\sum_{i=0}^r(x^i) = \frac{x^{r+1} - 1}{x - 1}$
+
+CQFD
+#+END_PROOF
+
+#+BEGIN_PROOF
+La démonstration par récurrence est un peu plus simple. On la reproduira ici plus tard.
+#+END_PROOF
+
+*** Question 1.1.2
+
+Définitions de Landau :
+
+#+BEGIN_DEFINITION
+Soit $\mathcal{F}_{\mathcal{N}}$ l'ensemble des fonctions de $\mathbb{N}$ dans $\mathbb{R}^{+}$.
+
+Soient $f$ et $g$ deux fonctions de $\mathcal{F}_{\mathcal{N}}$.
+
+On dit que $f$ est dominée par $g$ au voisinage de l'infini (ou encore que $g$ est une borne asymptotique supérieure de $f$) sssi :
+
+$\exists c, n_0 > 0$ tels que $\forall n > n_0$, on a $f(n) < cg(n)$.
+
+On peut noter $f = O(g)$ ou encore $g = \Omega(f)$, ces deux notations sont équivalentes.
+#+END_DEFINITION
+
+#+BEGIN_DEFINITION
+On dira que $f$ et $g$ sont semblables au voisinage de l'infini (ou encore que $g$ est une borne asymptotique approchée de $f$) sssi $f$ est dominée par $g$ et $g$ est dominée par $f$. On notera :
+
+$f = \Theta(g)$ (et donc aussi $g = \Theta(f)$)
+#+END_DEFINITION
+
+*** Question 1.1.3
+
+*** Question 1.1.4
+
+*** Question 1.1.5
+
+[à reprendre au propre]
+[Tout pris en feuilles volantes]
+
+** Exercice 1.2
+
+*** Question 1.2.1
+
+Oui. Exemple du tri à bulle.
+
+*** Question 1.2.2
+
+Oui : f \in O(n^2) est une espèce de borne supérieure. On pourrait parfaitement avoir aussi f \in O(n).
+
+*** Question 1.2.3
+
+Oui, j'imagine : exemple du tri à bulle sur des données non-triées en n^2, mais en n sur des données n^2.
+
+*** Question 1.2.4
+
+A priori non : On a $f \in \Theta(n^2)$, donc on a $n^2 \in \Theta(f)$, donc on a $n^2 \in O(f)$.
+
+Or $n^2 \notin O(n)$. Donc $O(f) \nsub O(n)$.
+
+Ce qui revient à dire qu'il n'est pas possible qu'il soit en O(n) sur toutes les données.
+
+** Exercice 3
+
+*** Question 1.3.1
+
+Dans l'ordre croissant :
+
+| f14           |
+| f3 f11        |
+| f6            |
+| f10           |
+| f1 f9 f13 f15 |
+| f16           |
+| f8            |
+| f4            |
+| f2            |
+| f12           |
+| f5            |
+| f7            |
+
+On se propose de redémontrer un certain nombre de dominations qui ne seraient pas évidentes.
+
+** Résultats annexes
+
+

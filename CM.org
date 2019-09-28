@@ -308,7 +308,7 @@ Le but de ces concepts est de pouvoir ramener la fonction de complexité asympto
 
 
 
-* Cours 1 : 16/09/2019
+* Cours 1 : 17/09/2019 et 24/09/2019
 
 ** Chapitre 0
 
@@ -371,6 +371,10 @@ $f = \Theta(g)$ (et donc aussi $g = \Theta(f)$)
 On a aussi la notation suivante :
 
 $\lim_{n \to +\infty} f(n)/g(n) = 0$ se note $f = o(g)$
+
+De fait, $f = o(g)$ implique $f = O(g)$
+
+$f ~ g$ signifie $f = o(g)$ et $g = o(f)$
 #+END_DEFINITION
 
 [[./CM1/ordredegrandeur.jpg][Comparaison d'ordres de grandeur asymptotique]]
