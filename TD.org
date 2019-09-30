@@ -10,11 +10,25 @@ Raphaël Monat (raphael.monat@lip6.fr)
 
 *** Question 1.1.1
 
+On rappelle la formule du binôme de Newton :
+
+#+BEGIN_THEOREM
+Binôme de Newton
+
+$(a + b)^n = \sum_{i=0}^{n} [a^i b^{n-i} {n\choose i}]$
+#+END_THEOREM
+
 La première égalité suit du binôme de Newton, en posant a = b = 1
 
-La deuxième égalité suit de la définition des suites géométriques, et de la somme des séries. Ce résultat de la somme des séries se redémontre par récurrence faible.
+La deuxième égalité suit de la définition des suites géométriques, et de la somme des séries :
 
-Ou alors, par somme téléscopique :
+#+BEGIN_THEOREM
+$\sum_{i=0}^{n} q^i = \frac{1 - q^{n+1}}{1 - q}$
+#+END_THEOREM
+
+Deux manière de redémontrer ce résultat.
+
+Par somme téléscopique, pourvu qu'on connaisse l'astuce qui consiste à multiplier les deux quantités par x - 1 :
 
 #+BEGIN_PROOF
 $(x - 1)\sum_{i=0}^r(x^i) = x\sum_{i=0}^r(x^i) - \sum_{i=0}^r(x^i)$
@@ -34,7 +48,25 @@ CQFD
 #+END_PROOF
 
 #+BEGIN_PROOF
-La démonstration par récurrence est un peu plus simple. On la reproduira ici plus tard.
+Par récurrence, on suppose la proposition vérifiée au rang n, on se propose donc de montrer :
+
+$\sum_{i=0}^{n+1} q^i = \frac{1 - q^{n+2}}{1 - q}$
+
+Ce qui est équivalent à :
+$\sum_{i=0}^{n} [q^i] + q^{n+1} = \frac{1 - q^{n+2}}{1 - q}$
+
+On réinjecte l'hypothèse de récurrence en place du terme de gauche :
+$\frac{1 - q^{n+1}}{1 - q} + q^{n+1} = \frac{1 - q^{n+2}}{1 - q}$
+
+Après avoir mis tous les termes de gauche au même dénominateur et simplifié, on se retrouve avec une identité.
+
+La proposition à démontrer est équivalente à une identité. Elle est donc vérifiée.
+
+En application du principe de récurrence, on a bien :
+
+$\sum_{i=0}^{n} q^i = \frac{1 - q^{n+1}}{1 - q}$
+
+CQFD
 #+END_PROOF
 
 *** Question 1.1.2
@@ -61,7 +93,75 @@ $f = \Theta(g)$ (et donc aussi $g = \Theta(f)$)
 
 *** Question 1.1.3
 
+On suppose f \in O(g)
+
+#+BEGIN_PROOF
+Montrons que O(f) \sub O(g) :
+
+Soit h une fonction appartenant à O(f). Par la définition de O, on a :
+
+\exists n_0, c > 0 tq \forall n > n_0, h(n) < c * f(n)
+
+Or f \in O(g), on a donc :
+
+\exists n'_0, c' > 0 tq \forall n > n_0, f(n) < c' * g(n)
+
+Soit, en combinant les deux propositions :
+
+\exists n_0, c, n'_0, c' > 0 tq \forall n > max(n_0, n'_0), h(n) < c * f(n) < c * c' * g(n)
+
+On a donc deux entiers c'' et n''_0, respectivement définis comme c*c' et max(n_0, n'_0) tq
+
+\forall n > n''_0, h(n) < c'' * g(n)
+
+On a donc h \in O(f) \rArr h \in O(g), soit O(f) \sub O(g)
+
+CQFD
+#+END_PROOF
+
+#+BEGIN_PROOF
+Montrons maintenant que O(max(f,g)) = O(g), ce qui revient à montrer O(max(f,g)) \sub O(g) et O(g) \sub O(max(f,g)).
+
+O(g) \sub O(max(f,g)) est trivial. Pour tout x un réel, on a max(f(x), g(x)) > g(x) :
+
+En effet, pour chaque valeur de x possible, on au moins un de ses résultats qui est vérifié (pas forcément toujours le même pour toutes les valeurs de x, bien entendu) :
+- f(x) > g(x), qui implique bien max(f(x), g(x)) > g(x)
+- f(x) < g(x), qui implique bien max(f(x), g(x)) > g(x)
+- f(x) = g(x), qui implique bien max(f(x), g(x)) > g(x)
+
+Il existe donc bien un rang n_0, et un réel c strictement positifs tels que :
+
+\forall x > n_0, g(x) < c * max(f(x), g(x))
+
+ALITER O(g) \sub O(max(f,g))
+
+
+Dans l'autre sens, moins facile :
+
+Définissons h(x) = max(f(x), g(x)). Pour chaque valeur de x possible, on a :
+- soit h(x) = f(x)
+- soit h(x) = g(x)
+
+Or f \in O(g) (hypothèse)
+et g \in O(g) (évident)
+
+Donc, pour chaque valeur de x possible, on a :
+- soit h \in O(g)
+- soit h \in O(g)
+
+ALITER O(max(f,g)) \sub O(g)
+
+Donc O(max(f,g)) = O(g).
+
+CQFD
+#+END_PROOF
+
 *** Question 1.1.4
+
+On se propose de montrer O(f + g) = O(max(f,g))
+
+[à faire plus tard]
+[Notre démonstration repose sur un lemme encore non validé]
 
 *** Question 1.1.5
 
@@ -111,6 +211,33 @@ Dans l'ordre croissant :
 
 On se propose de redémontrer un certain nombre de dominations qui ne seraient pas évidentes.
 
+On rappelle quand même un certain nombre d'ordres de grandeur qu'on suppose connus de soi.
+
+
+
 ** Résultats annexes
 
+Il est un ensemble de résultats d'analyse qu'on souhaiterait avérés, et utilisables sans redémonstration.
+
+Deux résultats en particulier, un faible, l'autre plus fort (le faible suivant du fort, et suffisant en lui-même pour nos besoins)
+
+#+BEGIN_THEOREM
+Lemme
+
+Soit $\mathcal{F}_{\mathcal{N}}$ l'ensemble des fonctions de $\mathbb{N}$ dans $\mathbb{R}^{+*}$, monotones croissantes.
+
+Soient f et g deux éléments de $\mathcal{F}_{\mathcal{N}}$
+
+Peut-on dire qu'au moins un de ces résultats est vrai (version faible) (on raisonne au voisinage de l'infini) :
+- f \in O(g)
+- g \in O(f)
+- f \in O(g) et g \in O(f)
+
+Peut-on dire qu'au moins un de ces résultats est vrai (version forte) (on rappelle que g ne peut être égal à 0) :
+- $\lim_{n\to+\infty} \frac{f}{g} = 0$
+- $\lim_{n\to+\infty} \frac{f}{g} = +\infty$
+- $\lim_{n\to+\infty} \frac{f}{g} = c$, c une constante strictement positive.
+
+On remarque que le premier résultat implique f \in o(g) (donc f \in O(g)), le deuxième g \in o(f) (donc g \in O(f)), le dernier f ~ c*g (donc f \in \Theta(g))
+#+END_THEOREM
 

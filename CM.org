@@ -374,7 +374,7 @@ $\lim_{n \to +\infty} f(n)/g(n) = 0$ se note $f = o(g)$
 
 De fait, $f = o(g)$ implique $f = O(g)$
 
-$f ~ g$ signifie $f = o(g)$ et $g = o(f)$
+$f ~ g$ signifie $f - g = o(g)$ (équivalence)
 #+END_DEFINITION
 
 [[./CM1/ordredegrandeur.jpg][Comparaison d'ordres de grandeur asymptotique]]
@@ -454,6 +454,8 @@ Définition par induction forte :
 Structure dite plane : les fils sont ordonnés de gauche à droite.
 
 #+BEGIN_THEOREM
+Un certain nombre de résultats intéressants :
+
 Pour k >= 0
 
 - B_k a 2^k noeuds (par construction)
@@ -464,7 +466,31 @@ Pour k >= 0
 - La forêt reliée à la racine de B_k est < B_{k-1}, B_{k-2}, ..., B_1, B_0 > (par construction)
 #+END_THEOREM
 
-[refaire les démonstrations par récurrence]
+#+BEGIN_PROOF
+- Le premier résultat est évident par construction.
+- Le deuxième suit du précédent trivialement : tous les noeuds ont exactement une arête entrante (qui vient du haut), sauf le noeud racine.
+- Le troisième résultat se démontre par récurrence faible :
+
+Initialisation (à 1) : évident.
+Récurrence : Supposons la chose vraie à n un rang fixe. La construction de B_{n+1} supposant de placer B_n, B_{n-1}, etc... sous une nouvelle racine, dans l'ordre donné, de gauche à droite. Par définition de la hauteur, le chemin à parcourir est l'arête du nouvel arbre jusqu'à son fils immédiat le plus à gauche (1 traversée), puis de ce fils (ancienne racine de l'arbre B_n) jusqu'à son descendant final le plus à gauche (n traversées, par hypothèse de récurrence). On a donc bien n+1 traversées à faire pour arriver au descendant final le plus à gauche. Par application du principe de récurrence, on a B_k a hauteur k. CQFD
+
+- Le quatrième résultat suit de la définition par induction forte plus haut, et suit directement du sixième résultat (qu'on suppose lui vrai par construction) : si la forêt reliée à la racine de B_k est <B_{k-1}, B_{k-2}, ...., B_{1}, B_{0}>
+
+- Le cinquième résultat est le moins trivial à démontrer :
+
+Par construction (en prenant la définition par induction forte), le nombre de noeuds à profondeur i de B_{k+1} est égal au nombre de noeuds à profondeur i de B_k (l'arbre B_k qu'on a fait le père de l'autre) plus le nombre de noeuds à profondeur i-1 de B_k (l'arbre B_k qu'on a fait le fils le plus à gauche de l'autre).
+
+Si on donne n_{k,i} le nombre de noeuds de profondeur i de l'arbre B_k, alors la traduction formelle de la précédente intuition est donnée par :
+$n_{k + 1,i} = n_{k,i} + n_{k,i-1}$
+
+A partir de ça, on peut démontrer ce résultat par récurrence.
+Initialisation (à 1) : ${1\choose 0} = {1\choose 1} = 1$. On a bien un noeud de profondeur 0 et un de profondeur 1.
+On suppose l'égalité vérifiée au rang n, soit $n_{k,i} = {k\choose i}$. On doit montrer $n_{k+1,i} = {k+1\choose i}$, ce qui revient à montrer, par application de la formule de Pascal $n_{k+1,i} = {k\choose i} + {k\choose i-1}$.
+
+Or, par application de la précédente intuition, on voit immédiatement le résultat à démontrer.
+#+END_PROOF
+
+*** Aparté
 
 #+BEGIN_DEFINITION
 Induction faible vs induction forte
@@ -500,6 +526,8 @@ Extension du théorème démontré en archi :
 n = \alpha_0 2^0 + \alpha_1 2^1 + ... + \alpha_r 2^r
 
 *Avec r = floor(log_2(n))*
+
+log_2 est le logarithme binaire, soit la puissance à laquelle le nombre 2 doit être monté pour obtenir un nombre n.
 #+END_THEOREM
 
 #+BEGIN_THEOREM
@@ -508,11 +536,10 @@ Corollaire
 Au plus, on a log(n) éléments dans la file. On sait que le minimum de toutes les étiquettes est à la racine d'un des éléments de la file. Donc la complexité de trouver le min dans une file binomiale est au plus d'ordre log(n).
 #+END_THEOREM
 
-
 #+BEGIN_THEOREM
 Corollaire
 
-Si n = 2^k, FB_n est un tournoi binomial.
+Si n = 2^k, FB_n est la suite réduite à un unique tournoi binomial, le tournoi binomial TB_k.
 
 Sinon la file binomiale est une suite de tournois correspondants aux bits égaux à 1 dans la représentation binaire de n.
 #+END_THEOREM
@@ -529,9 +556,23 @@ avec les b_i les bits à 1 dans la représentation binaire de n. Correspond au n
 Propriétés de FB_n
 
 - FB_n a n noeuds
-- FB_n a (n - \nu(n)) arêtes (les noeuds, moins le nombre de tournois)
+- FB_n a (n - \nu(n)) arêtes.
 - Le plus grand arbre binomial est B_{floor(log(n))}, le premier arbre de la file binomiale. De hauteur floor(log(n)) et nombre de noeuds 2^{floor(log(n))}.
+- Le nombre d'arbres de la file est donné par \nu(n).
+- Le minimum de la file est à la racine de l'un des arbres
 #+END_THEOREM
+
+#+BEGIN_PROOF
+Le premier résultat est la définition.
+
+Le deuxième résultat vient de ce que le nombre d'arêtes correspond au nombre de noeuds, moins le nombre de tournois (extension de la preuve plus haut par arête entrante, à \nu(n) plutôt que 1).
+
+Le troisième résultat est vrai par construction.
+
+Le quatrième est donné par la définition du poids de Hamming.
+
+Le cinquième suit des conditions de stricte croissance et stricte distinction des étiquettes de chacun des tournois de la file.
+#+END_PROOF
 
 *** Union de files binomiales
 
@@ -561,7 +602,20 @@ En fait, c'est super facile de faire une addition en binaire : on peut se conten
 
 **** Primitives
 
-Ces primitives des pages 22 et 23 sont utilisables en examen : si on les appelle dans du pseudo-code, le correcteur saura ce que ça signifie.
+Ces primitives des pages 22 et 23 sont utilisables en examen : si on les appelle dans du pseudo-code, le correcteur (notre compilateur humain) saura ce que ça signifie.
+
+On a droit à :
+
+- EstVide(T) : Renvoie vrai si le tournoi T est vide
+- Degre(T) : Renvoie le degré (un entier) de la racine du tournoi
+- Union2Tid(T) : Renvoie l'union de deux tournois (un tournoi) de même taille
+- Decapite(T) : Renvoie la file binomiale (suite de tournois) obtenue en supprimant la racine du tournoi T_k
+- File(T) : Renvoie la file binomiale réduite au tournoi
+
+- EstVide(F) : Renvoie vrai si la file F est vide
+- MinDeb(F) : Renvoie le tournoi de degré minimal de la file F
+- Reste(F) : Renvoie la file privee de son tournoi de degre minimal
+- AjoutMin(T, F) : Renvoie la file obtenue en ajoutant le tournoi T comme tournoi de degré inférieur de la file F (ne fonctionne que si T est effectivement de degré plus petit que le degré minimal de la file passée en entrée)
 
 Ces primitives peuvent aussi servir à définir des algorithmes de plus haut niveau. Si on a le temps, on pourrait implémenter ces primitives en C.
 
@@ -577,16 +631,72 @@ Idée principale : L'union de deux tournois de même taille nécessite 1 compara
 
 Conséquence : Le nombre de comparaisons égale le nombre d'arêtes de la file union moins le nombre d'arêtes des files de départ (en gros, les arêtes créées).
 
+#+BEGIN_PROOF
+Si on pose cette idée de manière formelle, ça donne :
+
+$n + m - \nu(n+m) - (n - \nu(n)) - (m - \nu(m))$
+
+Ce qui va se simplifier en :
+$\nu(n) + \nu(m) - \nu(n+m)$
+
+On a \nu(n) toujours inférieur à ceiling(log_2(n)).
+
+On peut donc poser la quantité plus haut comme inférieure largement à :
+
+$2\lfloor log_2(n + m) \rfloor + 2$
+
+Cette borne supérieure est un grand O de log_2(n + m)
+#+END_PROOF
+
 *** Ajout d'un élément à une file
 
 La meilleure manière, c'est de créer une file binomiale contenant seulement l'élément à ajouter, puis je fais l'union.
+
+La complexité est donc donnée par \nu(n) + 1 - \nu(n + 1).
 
 La complexité est entre 0 et \nu(n) : on a au max \nu(n) comparaisons.
 
 *** Construction
 
-Cout de la construction est le cout de la commutation de bits.
+La meilleure manière, c'est l'ajout de chacun des éléments un à un.
 
+La complexité de la construction d'une file binomiale est donc donnée par la complexité de l'adjonction successive de ses n éléments.
+
+Soit ici :
+
+$\sum_{i=1}^{n-1} [\nu(i) + i - \nu(1+i)]$
+
+C'est une somme téléscopique. Après simplification, la quantité totale de comparaisons est donnée par n - \nu(n)
+
+Coût de la construction est le coût de la commutation de bits. [à clarifier avec Genetrini : Qu'est-ce que la commutation de bits ?]
+
+**** Aparté : le coût amorti
+
+#+BEGIN_DEFINITION
+Dans une série d'opérations, on peut définir le coût amorti d'une opération comme la division du coût total par le nombre des opérations.
+
+La définition plus générale, c'est le coût moyen d'une opération au pire cas. La manière de la définir plus haut est le résultat de la méthode dite par agrégat.
+#+END_DEFINITION
+
+*** Suppression du minimum
+
+On sait par construction que le minimum de la file est à la racine d'un des tournois qui la composent.
+
+La recherche prend donc \nu(n) - 1 comparaisons (le nombre de tournois - 1). Ce qui est un grand O de log_2(n).
+
+La suppression consiste en supprimer la racine du tournoi qui porte la racine minimale : ça créé une deuxième file binomiale constituée des fils orphelins de la racine. On fait ensuite l'union de cette nouvelle file avec la file de départ privée du tournoi décapité.
+
+Il reste, entre ces deux files, n - 1 éléments.
+
+La recherche est toujours de complexité log_2(n). L'union des deux files sera aussi de complexité log_2(n) dans le pire des cas (cas particulier de la complexité général des unions de files binomiales).
+
+*** Diminution d'une clé (ou étiquette)
+
+On suppose un accès direct au noeud dont il faut diminuer la clé.
+
+La meilleure manière, c'est de modifier la clé, puis échanger le noeud avec son père de manière successive jusqu'à ce que l'hypothèse de stricte croissance soit à nouveau respectée. Par construction, il y a forcément un moment où ça arrive. Par construction, on suppose aussi que la nouvelle valeur de la clé est distincte de toutes les autres (hypothèse de stricte distinction).
+
+La complexité au pire cas, donné par le nombre maximum de comparaisons, est donc la hauteur de l'arbre, soit log_2(n) (ou log(n), à vérifier avec Genitrini)
 
 * Annexes
 
