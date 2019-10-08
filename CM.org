@@ -676,6 +676,12 @@ Coût de la construction est le coût de la commutation de bits. [à clarifier a
 Dans une série d'opérations, on peut définir le coût amorti d'une opération comme la division du coût total par le nombre des opérations.
 
 La définition plus générale, c'est le coût moyen d'une opération au pire cas. La manière de la définir plus haut est le résultat de la méthode dite par agrégat.
+
+On regarde la pire configuration en totalité :
+
+La somme des opérations de la pire configuration \neq n fois la pire opération.
+
+Correspond au coût moyen d'une opération dans le pire cas, quelle que soit la suite d'opérations.
 #+END_DEFINITION
 
 *** Suppression du minimum
@@ -698,7 +704,433 @@ La meilleure manière, c'est de modifier la clé, puis échanger le noeud avec s
 
 La complexité au pire cas, donné par le nombre maximum de comparaisons, est donc la hauteur de l'arbre, soit log_2(n) (ou log(n), à vérifier avec Genitrini)
 
+
+* Cours 2 : 01/10/2019
+
+On s'intéresse aux structures qui vont permettre de faire de la recherche, ici des structures arborescentes.
+
+*** Problème de recherche
+
+#+BEGIN_DEFINITION
+Base de données
+
+Ensemble d'éléments, chaque élément a une clé, on a un ordre total (deux clés différentes : une doit être plus petite que l'autre), on a un accès au bit des clés, les calculs se font sur les clés.
+
+Sur lequels on est amené à faire les opérations suivantes :
+- Recherche
+- Ajouter
+- Supprimer
+- Construction
+- Recherches partielles
+
+Certaines structures sont plus ou moins bien adaptées aux différentes opérations.
+#+END_DEFINITION
+
+*** Efficacités par structure
+
+On a l'efficacité en temps (nombre d'opérations) (plus important), et l'efficacité en mémoire (moins important).
+
+[[./CM2/efficacite.jpg][Efficacité comparée]]
+
+** Arbres binaires de recherche (ABR)
+
+*** Arbres binaires
+
+#+BEGIN_DEFINITION
+Un arbre binaire est :
+
+- soit vide
+- soit constitué d'un noeud racine, et de deux sous-arbres (un gauche et un droit) qui sont aussi des arbres binaires
+
+Soit $\mathcal{B} = \emptyset + <\bullet ,\mathcal{B}, \mathcal{B} >$
+#+END_DEFINITION
+
+#+BEGIN_DEFINITION
+Un parcours est donné par :
+$\mathcal{B} \to$ Liste(sommets)
+#+END_DEFINITION
+
+#+BEGIN_EXAMPLE
+On a plusieurs parcours fréquemment utilisés.
+
+Le parcours préfixe :
+
+PREF(B) = [visit(\bullet), PREF(G), PREF(D)]
+
+Le parcours préfixe d'un ABR ne donne aucune information sur l'ordre des clés.
+Chaque noeud n'est visité qu'une seule fois : coût O(n)
+
+Le parcours infixe :
+
+INF(B) = [INF(G), visit(\bullet), INF(D)]
+
+Le parcours infixe donne a priori renvoie une liste triée des clés.
+Coût aussi O(n).
+
+Le parcours suffixe :
+
+SUF(B) = [SUF(G), SUF(D), visit(\bullet)]
+
+Chaque parcours envoie en ordre différent la liste.
+#+END_EXAMPLE
+
+#+BEGIN_DEFINITION
+On peut compléter les noeuds vides par une feuille. L'arbre obtenu s'appelle le complété. L'arbre complété à n noeuds a en plus n + 1 feuilles
+#+END_DEFINITION
+
+*** ABR
+
+#+BEGIN_DEFINITION
+Un arbre binaire de recherche est un arbre binaire tel que :
+
+En chaque noeud, l'étiquette est plus grande que toutes les étiquettes du sous-arbre gauche, et plus petite que toutes les étiquettes du sous-arbre droit.
+#+END_DEFINITION
+
+#+BEGIN_THEOREM
+Propriété
+
+Le parcours infixe d'un ABR donne la suite des étiquettes en ordre croissant.
+#+END_THEOREM
+
+#+BEGIN_PROOF
+La preuve se fait par induction forte.
+#+END_PROOF
+
+**** Algorithmes de recherche, ajout et suppression
+
+Peuvent se faire en parcourant seulement une seule branche (c'est pour ça qu'on s'en sert).
+L'insertion se fait à un unique endroit, facile à déterminer.
+La suppression d'un noeud interne (pas tout en bas) requiert un peu de travail parmi les sous-arbres.
+
+**** Primitives
+
+On a un certain nombre de primitives dont on aura le droit de se servir en examen, pour définir des algorithmes en pseudo-langages de plus haut niveau :
+- ArbreVide : renvoie l'arbre vide
+- ArbreBinaire(e,G,D) : renvoie l'arbre binaire formé de l'élément e et des sous-arbres G à gauche et D à droite
+- EstArbreVide(A) : renvoie vrai sssi l'arbre est vide
+- Racine(A) : Renvoie le contenu de la racine de A.
+- SousArbreGauche(A) : Renvoie une copie du sous-arbre gauche
+- SousArbreDroit(A) : Renvoie une copie du sous-arbre droit
+- Pere(A) : Renvoie l'arbre dont A est un des sous-arbre immédiat (un des fils de la racine), ou l'arbre vide, si A n'est pas un sous-arbre.
+
+**** ABR équilibrés
+
+#+BEGIN_DEFINITION
+Soit un ABR quelconque
+
+La hauteur moyenne est en O(log(n)), mais au pire on a un peigne, ce qui implique une hauteur O(n).
+#+END_DEFINITION
+
+On peut avoir un ABR très déséquilibré (ici celui de droite, appelé peigne) :
+
+[[./CM2/ABR.png][ABR]]
+
+Dans le pire des cas, on a besoin de n comparaisons pour trouver l'entier n.
+
+On a des manières de forcer le rééquilibrage par rotation si l'amplitude
+(On ne gagne pas en moyenne, mais on diminue la probabilité du pire cas)
+
+** Arbres équilibrés
+
+#+BEGIN_DEFINITION
+Un arbre équilibré est un arbre dont la hauteur est toujours en O(log(n)).
+#+END_DEFINITION
+
+#+BEGIN_THEOREM
+Soit la liste des entiers de 1 à n. Le nombre total de mélanges est donné par n!.
+
+Etant donné un mélange, soit un ordre d'arrivée, on a un unique arbre.
+
+Ces trois propositions disent à peu près la même chose vague :
+- En fait, très peu de mélanges donnent un arbre déséquilibré.
+- On a moins d'arbres que de mélanges. Les arbres équilibrés ont une probabilité forte d'advenir.
+- Plus l'arbre est équilibré, plus il y a de mélanges qui débouchent sur l'arbre.
+#+END_THEOREM
+
+On va avoir besoin d'algorithmes sophistiqués pour préserver l'équilibre.
+
+*** Processus de rotation
+
+On fait l'insertion, on a dépassé le seuil (par exemple, j'avais des noeuds vides à un étage qui n'est pas le dernier)
+On remonte au père du noeud vide à remplir en partant de l'étiquette qu'on vient de rajouter.
+On fait une rotation vers le noeud vide (donc vers la gauche ou la droite) en partant de son père.
+
+En général, il est trop coûteux d'obtenir un ABR parfait.
+
+On se permet alors de relâcher les contraintes :
+Sur la hauteur, donne la famille des arbres AVL.
+Sur le remplissage des noeuds d'un étage (la largeur), donne la famille des arbres B.
+
+*** Exemples de structures
+
+Structures typiques pour la RAM :
+- AVL
+- Arbre 2-3-4 (Red-black)
+
+Structures typiques pour le disque (plus de données, base de données) :
+- Arbre B
+- Arbre auto-adaptatif
+
+*** AVL (Adelson-Velsky, Landis)
+
+#+BEGIN_DEFINITION
+Un AVL est un ABR, mais en plus, en chaque noeud, la hauteur du sous-arbre gauche et celle du sous-arbre droit diffèrent au plus de 1.
+#+END_DEFINITION
+
+#+BEGIN_THEOREM
+Soit h la hauteur d'un AVL avec n noeuds :
+
+log_2(n+1) \leq h + 1 < 1.44 log_2(n)
+#+END_THEOREM
+
+#+BEGIN_PROOF
+La preuve de la borne de droite est donné par la considération des pires arbres AVL, les arbres de Fibonacci :
+
+F_0 = < \bullet , \emptyset , \emptyset >
+F_1 = < \bullet , F_0 , \emptyset >
+F_n = < \bullet , F_{n-1} , F_{n-2} >
+
+C'est le pire arbre AVL possible dans le sens où il contient le moins d'étiquettes pour une hauteur donnée. (pas vraiment une démonstration, on a juste l'idée).
+#+END_PROOF
+
+*** Rotations
+
+**** Rotation droite :
+
+A = < q, < p, U, V >, W > \to RD(A) = < p, U, < q, V, W > >
+
+Avec U le sous-arbre de hauteur +1.
+
+[[./CM2/rotationdroite.jpg][Rotation droite]]
+
+**** Rotation gauche :
+
+A = < p, U, < q, V, W >, W > \to RG(A) = < q, < p, U, V >, W >
+
+**** Rotation gauche-droite :
+
+A = < q, < p, U, < r, V_{1}, V_{2} >, >, W > \to RGD(A) = < r, < p, U, V_{1} >, < q, V_{2}, W > >
+
+[[./CM2/rotationgauchedroite.jpg][Rotation gauche-droite]]
+
+Toutes ces rotations sont très peu coûteuses.
+
+
+
+* Cours 3 : 08/10/2019
+
+** Arbres équilibrés, suite
+
+*** Arbre de recherche général
+
+#+BEGIN_DEFINITION
+Dans un arbre 
+
+Chaque noeud contient un k-uplet (e_1 < e_2 < ... < e_k) d'éléments distincts et ordonnées.
+
+Chaque noeud a k+1 sous A_1, ..., A_{k+1} tels que :
+- Tous les éléments de A_1 sont < e_1
+#+END_DEFINITION
+
+Cas particulier :
+
+#+BEGIN_DEFINITION
+Arbres 2-3-4
+
+Les noeuds internes contiennent des k-uplets de 1, 2 ou 3 éléments.
+
+Toutes les feuilles sont au même niveau.
+#+END_DEFINITION
+
+#+BEGIN_THEOREM
+h la hauteur d'un arbre 2-3-4 avec n éléments : h \in \Theta(n)
+#+END_THEOREM
+
+#+BEGIN_PROOF
+Si un arbre n'a que des 2-noeuds (une seule valeur par ) :
+
+h+1 = log_2(n+1)
+
+Si un arbre n'a que des 4-noeuds (3 valeurs par ) :
+
+h+1 = log_4(n+1)
+#+END_PROOF
+
+**** Primitives
+
+On dispose d'un ensemble de primitives utiles, qui pourront être réutilisées en examen.
+
+A partir de ces primitives, on peut donner un algorithme de recherche en pseudo-langage.
+
+**** Recherche d'un élément
+
+En O(log(n))
+
+**** Ajout d'un élément
+
+L'ajout est guidé par la recherche.
+
+Je rajoute dans le seul noeud dans lequel je peux mettre (de plus bas niveau, bien sûr)
+
+Si celui-ci est plein, alors on doit éclater le noeud (ce qui implique une modification de la valeur) :
+
+L'élément du mileu devient la racine, le plus petit devient le fils gauche, le plus grand devient le fils droit (même niveau donc).
+
+On met l'élément à sa place en recommeçant à chercher au pointeur (qu'on a pris la peine de garder avant), dans l'endroit de plus bas niveau.
+
+Le pointeur est un endroit d'où recommencer la recherche après l'éclatement.
+
+Si on a un éclatement sur une feuille du bas, on doit faire remonter la valeur centrale de l'élément à éclater
+
+[faire l'exemple avec les valeurs données]
+
+On ne peut faire croître la hauteur de l'arbre qu'en éclatant la racine.
+
+- Eclatement systématique en descente (présenté ici : on éclate dès qu'on rencontre un noeud plein)
+- Eclatement en remontée (on éclate que si on rencontre un noeud plein tout au bout)
+
+***** Avantages et inconvénients
+
+En descente :
+- Parcours uniquement de haut en bas (+)
+- Transformation très locale (on éclate un noeud, et on remonte pas plus haut que le père) (+)
+- Taux d'occupation plus faible (-)
+- Hauteur plus grande (-)
+
+En remontée :
+- Parcours dans les deux sens (double pointeurs, empreinte mémoire) (-)
+- Transformation en chaîne de proba non-nulle (-)
+- Taux d'occupation plus fort (+)
+- Hauteur plus petite (+)
+
+*** Arbres B
+
+Structure ultra-majoritaire des bases de données.
+Existe depuis 30 ans.
+
+Implémenté en C++ dans la bibliothèque stxxl.
+
+On veut blinder les noeuds
+
+#+BEGIN_DEFINITION
+Arbre-B d'ordre m est un arbre de recherche
+
+Arbre de recherche dont les noeuds contiennent k éléments, k entre m et 2m.
+Sauf la racine qui contient entre 1 et 2 m.
+
+Toutes les feuilles sont situées au même niveau.
+#+END_DEFINITION
+
+#+BEGIN_THEOREM
+Hauteur d'un B-arbre d'ordre m contenant n éléments
+
+log_{2m+1}(n+1) \leq h + 1 \leq 1 + log_{m+1}((n+1)/2)
+#+END_THEOREM
+
+On choisit m tel que le contenu de la racine doit pouvoir être stocké en RAM. Un noeud doit tenir dans une page.
+Les autres noeuds seront stockés dans le disque.
+
+1 éclatement implique écrire deux pages en disque.
+
+#+BEGIN_THEOREM
+Le nombre d'éclatement par clé dans la construction par adjonctions successives d'un B-arbre d'ordre m est compris entre 1/(2m) et 1/m.
+#+END_THEOREM
+
+*** Arbres auto-adaptatifs
+
+#+BEGIN_DEFINITION
+Un arbre auto-adaptatif est un arbre binaire de recherche tel qu'à chaque recherche, ajout, suppression, le dernier élément visité est remonté à la racine par une suite de rotations.
+#+END_DEFINITION
+
+Quand je fais remonter qqch de très profond, l'arbre résultant est plutôt équilibré.
+
+#+BEGIN_THEOREM
+Fonction de potentiel d'un arbre T
+
+Poids de x \in T : w(x) = nb noeuds du ss-arbre de racine x (x inclus).
+
+La fonction de potentiel T est donnée par :
+
+\Phi(T) = \sum_{x \in T} r(x), avec r(x) = log_2(w(x)), rang de x.
+#+END_THEOREM
+
+** Tries
+
+Structures dont les clés sont des chaînes de caractère. Adaptation des structures précédentes.
+
+Les clés sont définissables caractère par caractère : on peut la voir bit par bit.
+
+L'idée est de partager les préfixes de deux mots par exemple.
+
+On veut effectuer la recherche, insérer, supprimer des clés.
+On veut pouvoir faire la liste en ordre alphanumérique.
+Recherche partiellement spécifiées (regex)
+Recherche du plus long préfixe dans S d'un mot donné.
+
+*** Primitives
+
+On a un ensemble de primitives utiles, qui vont permettre dé
+
+*** DST (Arbres digitaux)
+
+#+BEGIN_DEFINITION
+Un arbre binaire dont les noeuds contiennent les clés.
+
+Le principe de la recherche est le même que pour les ABR, mais l'aiguillage se fait non par comparaison entre clés, mais selon les bits de la clé cherchée (bit de poids fort au premier niveau, etc...)
+#+END_DEFINITION
+
+La structure de l'arbre va dépendre de l'ordre d'insertion.
+
+On doit décaler l'espace des caractères à écrire au "centre" de l'espace des caractères pouvant être écrits (en terme de nombre de bits) ou alors s'assurer ce que les éléments encodés sont uniformément répartis sur l'espace d'écriture.
+
+Idéalement, on doit commencer par insérer du milieu d'alphabet (le truc le plus proche de :
+10000000
+soit la valeur à égale distance de 00000000 et de 11111111)
+
+*** Arbres lexicographiques
+
+#+BEGIN_DEFINITION
+Un arbre lexicographique, ou un trie binaire :
+
+Les noeuds internes servent juste d'aiguillage (pas d'information dedans).
+Pour chaque noeud vide dont les bits depuis la racine sont donnés par w un vecteur de bits, le sous-arbre gauche contient toutes les clés commençant par (w, 0) et le sous-arbre droit contient toutes les clés commençant par (w, 1).
+#+END_DEFINITION
+
+Les clés sont en ordre croissant d'encodage.
+La hauteur maximale est donnée par le nombre de bits d'encodage.
+
+Notion de Patricia tries : on fusionne les noeuds qui n'ont qu'un fils avec le fils.
+
+*** R-Tries
+
+#+BEGIN_DEFINITION
+Un R-trie est un arbre dont tous les noeuds sont d'arité R et servent d'aiguillage. Chaque noeud a aussi une valeur, qui est non-vide s'il représente une clé.
+#+END_DEFINITION
+
+Recherche, ajout et suppression se fait par parcours de branche.
+
+#+BEGIN_THEOREM
+La structure ne dépend pas de l'ordre d'insertion.
+#+END_THEOREM
+
+Par exemple, un 26-trie peut avoir tous les mots de la langue française en une structure unique (pourvu qu'on écrive pas les accents).
+
+*** Trie hybride
+
+#+BEGIN_DEFINITION
+Arbre ternaire :
+
+Chaque noeud contient un caractère et une valeur. Chaque neoud a trois pointeurs : un lien Inf, Eq, Sup vers le sous-arbre dont le premier caractère est inférieur ou égal ou supérieur à son caractère.
+#+END_DEFINITION
+
+
 * Annexes
+
+Support des cours :
+
+[[./CM1/cours1.pdf][Cours 1]]
+[[./CM2/cours2.pdf][Cours 2]]
+
 
 
 

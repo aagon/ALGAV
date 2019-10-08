@@ -6,7 +6,9 @@ Raphaël Monat (raphael.monat@lip6.fr)
 
 * TD 1 : 26/09/2019
 
-** Exercice 1.1
+** TD 1
+
+*** Exercice 1.1
 
 *** Question 1.1.1
 
@@ -168,7 +170,7 @@ On se propose de montrer O(f + g) = O(max(f,g))
 [à reprendre au propre]
 [Tout pris en feuilles volantes]
 
-** Exercice 1.2
+*** Exercice 1.2
 
 *** Question 1.2.1
 
@@ -190,7 +192,7 @@ Or $n^2 \notin O(n)$. Donc $O(f) \nsub O(n)$.
 
 Ce qui revient à dire qu'il n'est pas possible qu'il soit en O(n) sur toutes les données.
 
-** Exercice 3
+*** Exercice 3
 
 *** Question 1.3.1
 
@@ -214,8 +216,7 @@ On se propose de redémontrer un certain nombre de dominations qui ne seraient p
 On rappelle quand même un certain nombre d'ordres de grandeur qu'on suppose connus de soi.
 
 
-
-** Résultats annexes
+*** Résultats annexes
 
 Il est un ensemble de résultats d'analyse qu'on souhaiterait avérés, et utilisables sans redémonstration.
 
@@ -240,4 +241,368 @@ Peut-on dire qu'au moins un de ces résultats est vrai (version forte) (on rappe
 
 On remarque que le premier résultat implique f \in o(g) (donc f \in O(g)), le deuxième g \in o(f) (donc g \in O(f)), le dernier f ~ c*g (donc f \in \Theta(g))
 #+END_THEOREM
+
+
+* TD 2 : 03/10/2019
+
+** TD 1, suite
+
+*** Exercice 2.1
+
+Les choses qu'il fallait deviner :
+- l'opération Dépiler(S) consiste en le dépilage d'une "unité" (on va dire un octet) : cette opération est réputée coûter 1.
+- l'opération Empiler(S,x) consiste en l'empilage d'un objet x de taille d'une unité (un octet) : cette opération est réputée coûter 1.
+- l'opération MultiDépiler(S,k) consiste en :
+
+MultiDépiler(P,k)
+tant que P \neq \emptyset et k>0 faire
+Dépiler(P)
+k = k-1
+
+On rappelle quand même le principe de deux manières de donner un coût amorti :
+- Méthode par agrégat : On prend une suite de n opérations, on borne son coût, et on divise par n
+- Méthode du potentiel : On créé une fonction de potentiel \Phi dont la différence entre \Phi(D_i) et \Phi(D_0) est positive ou nulle pour tout i un entier entre 0 et n.
+
+*** Question 2.1.1
+
+Coût amorti : on se place dans le cas d'une suite de n opérations (soit Empiler, soit Dépiler, soit MultiDépiler) faites sur une pile initialement vide.
+A la suite d'une séquence de n opérations :
+
+On ne peut pas avoir appelé Dépiler (soit directement, soit via MultiDépiler) plus de fois qu'on a appelé Empiler (on ne dépile pas une pile vide).
+Le nombre total d'appel à la fonction Dépiler est inférieure ou égale à n, soit \in \Theta(n).
+Le nombre d'appels restants (n - #Dépiler) correspond aux nombres d'appels de Empiler.
+
+La complexité au pire cas de la séquence des n opérations est un élément de \Theta(n).
+
+Le coût amorti de MultiDépiler est donc de \Theta(n)/n soit dans \Theta(1).
+
+*** Question 2.1.2
+
+La seule condition qui doit porter sur la fonction \Phi, c'est que \forall i, \Phi(D_i) - \Phi(D_0) \geq 0 (D_i étant la structure de donnée que l'on considère, à l'état i) : le coût amorti selon cette définition doit toujours être un majorant du coût réel (inconnu).
+
+Si on définit le potentiel de la pile comme simplement le nombre d'éléments de la pile, on a bien la condition respectée (si on admet qu'on commence avec une pile vide) : \Phi(D_0) = 0 et \forall i, \Phi(D_i) \geq 0.
+
+Empiler :
+Coût réel = 1. Différence du potentiel = 1. Coût amorti : 2
+Dépiler :
+Coût réel = 1. Différence du potentiel = -1. Coût amorti : 0
+MultiDépiler :
+Coût réel = k' le minimum de k le paramètre et s la taille de la pile. Différence du potentiel = k' le nombre d'éléments effectivement dépilés. Coût amorti = 0
+
+Le coût amorti d'une séquence quelconque de n opérations est bien dans \Theta(n) : le coût amorti d'une de ses opérations prise dans la série est donc de \Theta(n)/n soit dans \Theta(1).
+
+*** Exercice 2.2
+
+MultiEmpiler, deux cas distincts.
+
+Coût réel d'une opération : k le nombre de paramètres effectivement empilés.
+Différence du potentiel : k le nombre de paramètres effectivement empilés.
+
+Le coût amorti est donc effectivement de 2k dans le cas général.
+
+On peut avoir k borné par c, ou k borné par s la taille de la pile au moment de l'opération.
+
+Si k est borné par c, le coût amorti d'une séquence quelconque est de 2cn au plus, soit dans \Theta(n)
+Si k est borné par s, dans le pire des cas :
+
+Empilage puis MultiEmpilage, puis MultiEmpilage, etc...
+2 + 2 + 2 * 2 + 2 * 4 + 2 * 8 + 2 * 16
+
+2 + 2 * 2^0 + 2 * 2^1 + 2 * 2^2 + 2 * 2^3
+
+2 + \Sum_{i=0}^{n-1} (2*2^i)
+
+2 + \Sum_{i=0}^{n-1} (2^{i+1})
+
+2 + \Sum_{i=1}^{n} (2^{i})
+
+1 + \Sum_{i=0}^{n} (2^{i})
+
+Ce qui donne 2^{n+1}
+
+Donc la pire séquence de 1 opération d'Empilage suivie de (n-1) opérations de MultiEmpilage est de complexité 2^{n+1}.
+
+Soit le coût amorti un \Theta(2^{n+1}/n)
+
+
+*** Exercice 2.3
+
+On se place dans le cas d'une séquence de n opérations.
+La ième opération coûte i si i est une puissance de i, et 1 sinon.
+
+**** Question 2.3.1
+
+Soit n opérations :
+1   2   3   4   5   6   7   8
+0 + 1 + 1 + 2 + 1 + 1 + 1 + 3
+
+n opérations dont :
+- ceil(log_2(n)) opérations au plus valent i
+- n - ceil(log_2(n)) opérations valent 1
+
+On a donc une complexité d'une suite de n opérations :
+
+$i * ceil(log_2(n)) + 1 * (n - log_2(n))$
+
+Soit d'une opération :
+
+$\frac{i * ceil(log_2(n)) + 1 * (n - log_2(n))}{n}$
+
+L'opération est donc dans O(1 + 1), donc dans O(1).
+
+**** Question 2.3.2
+
+***** a
+
+Soit i pas une puissance de 2 :
+
+Le coût réel est de 1, la différence de potentiel est de 1 : le coût amorti est de 2
+
+Soit i une puissance de 2 :
+Le coût réel est de i, la différence de potentiel est de - \Phi(i-1) : le coût amorti est de i - \Phi(i-1), majoré par 0 à partir d'un certain rang.
+
+[Tu compte les entiers de 8 non compris à 16 non compris, c'est plus que 4 : et ça va de pire en pire]
+
+Donc 2 * (n - ceil(log_2(n))) + (i - \Phi(i-1)) * ceil(log_2(n))
+
+Qui est borné par 2 * (n - ceil(log_2(n)))
+
+Donc O(2n), donc O(n). En effet O(2n) = O(n+n) = O(max(n,n)) = O(n)
+
+Donc O(1) pour le coût amorti d'une opération.
+
+Ma foi, le résultat est tout à fait satisfaisant : on obtient O(1), de même que la méthode par agrégat.
+
+***** b
+
+On obtiendra à mon avis la même chose.
+
+La différence i - \Phi(i-1) sera toujours bien négative à partir d'un certain rang.
+
+Le coût amorti des opérations peu coûteuses sera de 3 au lieu de 2.
+
+On aura donc le coût amorti de la suite de n opérations en O(3n) qui vaut bien toujours O(n).
+
+
+**** Question 2.3.3
+
+On peut prendre l'exemple de l'incrémentation d'un nombre sur le plus petit nombre de bits possibles.
+
+Si l'incrémentation à i ne requiert pas d'augmenter le nombre de bits alloués, l'opération coûte 1 (ou un peu plus si on doit changer plus que 1 bit)
+
+Si l'incrémentation à i requiert d'augmenter le nombre de bits alloués, il faut copier log_2(i) bits dans une nouvelle zone qui a un bit en plus.
+
+*** Exercice 3.1
+
+**** Question 3.1.1
+
+Montrer l'équivalence entre les deux définitions.
+
+Définition 1 = Définition 2
+
+Initialisation : Vrai au rang 0
+
+Récurrence : On suppose B_k selon Déf 1 = B_k selon Déf 2 au rang k fixé.
+
+Si j'ai deux arbres B_k et B_k et que je mets l'un comme le fils le plus à gauche de l'autres, j'ai bien B_{k+1} un arbre dont la racine à k fils :
+B_k que je viens de mettre, puis B_{k-1}, ... les anciens fils de l'arbre que j'ai choisi comme frère de l'autre.
+
+Inversement, si j'ai B_{k+1} dont le noeud racine a k + 1 fils B_k, B_{k-1}, ..., B_0, je peux bien prendre le fils le plus à gauche, j'aurais bien en main deux arbres binomiaux B_k
+
+Donc B_k selon la première définition est équivalent à B_k selon la deuxième définition.
+
+**** Question 3.1.2
+
+***** a
+
+En se servant de la définition 1, puis par induction faible :
+
+- Vrai aux rangs 0 et 1 : 1 puis 2 noeuds.
+- On suppose vrai au rang k fixé : B_k a bien 2^k noeuds.
+On dédouble cet arbre, et on le met comme fils gauche de son frère. Le nouvel arbre a 2*2^k noeuds, soit 2^{k+1}
+
+D'après le principe de récurrence, on a bien 2^k noeuds à B_k
+
+CQFD
+
+***** b
+
+La hauteur de B_k est k. on définit la hauteur comme le nombre d'arêtes à traverser pour accéder au descendant le plus à gauche.
+
+En se servant de n'importe quelle définition, par induction faible :
+
+- Vrai aux rangs 0 et 1 : hauteur 0 puis 1.
+- On suppose la chose vraie au rang k fixé : B_k est bien de hauteur k.
+
+Soit B_{k+1} : pour accéder à son descendant le plus à gauche, on doit d'abord traverser une arête pour aller à son fils le plus à gauche, qui est B_k (évident par la définition 1 et la définition 2). De là, par hypothèse de récurrence, il faut traverser k arêtes pour accéder au descendant le plus à gauche. En tout, on a donc dû traverser k+1 arêtes.
+
+D'après le principe de récurrence, on a bien B_k de hauteur k
+
+CQFD
+
+***** c
+
+La chose la moins triviale à prouver.
+
+Par construction (en prenant la définition 2), le nombre de noeuds à profondeur i de B_{k+1} est égal au nombre de noeuds à profondeur i de B_k (l'arbre B_k qu'on a fait le père de l'autre) plus le nombre de noeuds à profondeur i-1 de B_k (l'arbre B_k qu'on a fait le fils le plus à gauche de l'autre).
+
+Si on donne n_{k,i} le nombre de noeuds de profondeur i de l'arbre B_k, alors la traduction formelle de la précédente intuition est donnée par :
+$n_{k + 1,i} = n_{k,i} + n_{k,i-1}$
+
+A partir de ça, on peut démontrer ce résultat par récurrence.
+Initialisation (à 1) : ${1\choose 0} = {1\choose 1} = 1$. On a bien un noeud de profondeur 0 et un de profondeur 1.
+On suppose l'égalité vérifiée au rang n, soit $n_{k,i} = {k\choose i}$. On doit montrer $n_{k+1,i} = {k+1\choose i}$, ce qui revient à montrer, par application de la formule de Pascal $n_{k+1,i} = {k\choose i} + {k\choose i-1}$.
+
+Or, par application de la précédente intuition, on voit immédiatement le résultat à démontrer.
+
+***** d
+
+Par degré, on entend arité, soit nombre de fils.
+
+On va se servir ici de la définition 2 :
+
+La racine de B_k a k fils, B_{k-1}, ..., B_0.
+
+CQFD
+
+***** Conclusion
+
+Les arbres binomiaux ont une taille exponentielle en leur degré : si leur degré est k, alors leur taille est 2^k
+
+Les arbres binomiaux ont une hauteur, et un degré, logarithmique en leur taille : si leur taille vaut n, alors leur hauteur et leur degré valent log_2(n).
+
+*** Exercice 3.2
+
+Les files binômiales relâchées.
+
+**** Question 3.2.1
+
+Par file binomiale de taille n, on entend une file binômiale avec en tout n noeuds dedans.
+
+L'arbre binomial en tête de file sera de degré ou de hauteur k_1 = \lfloor log_2(n) \rfloor, et donc de taille 2^{k_1}.
+
+Le suivant sera de degré k_2 = \lfloor log_2(n - 2^{k_1}) \rfloor et donc de taille 2^{k_2}
+
+et ainsi de suite, jusqu'à un éventuel arbre de hauteur 0 avec un unique élément dedans (seulement si n est impair, soit dit en passant)
+
+Exemple :
+
+Soit n = 143
+
+log_2(143) = 7 et des poussières.
+
+On a donc B_7 en premier arbre binomial de la file, avec 2^7 éléments dedans (128)
+
+143 - 128 = 15
+
+log_2(15) = 3.9 et des poussières
+
+On a donc B_3 en deuxième arbre binomial de la file, avec 2^3 élements dedans (8)
+
+15 - 8 = 7
+
+log_2(7) = 2.8 et des poussières
+
+On a donc B_2 en troisième arbre binomial de la file avec 2^2 éléments dedans (4)
+
+7 - 4 = 3
+
+log_2(3) = 1 plus qqch
+
+On a donc B_1 en quatrième arbre binomial de la file avec 2^1 éléments dedans (2)
+
+3 - 2 = 1
+
+On met le dernier élément dans B_0.
+
+On a donc :
+
+FB_{143} = < AB_7, AB_3, AB_2, AB_1, AB_0 >
+
+143 a besoin de l'arbre binomial 7, ce qui revient à dire qu'il a besoin de 8 bits pour être écrit en binaire. Et en fait, il s'écrit :
+
+| 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+| 1 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
+
+Ce qui correspond exactement aux degrés des arbres binomiaux nécessaires.
+
+**** Question 3.2.2
+
+Je viens de démontrer ce résultat dans la question précédente.
+
+**** Question 3.2.3
+
+On appelle file binomiale relâchée de n une suite de tournois binomiaux de tailles quelconques mais dont la somme des noeuds est quand même égale à n.
+
+On a défini D(n) comme le degré maximal d'une file binomiale n.
+
+On ne saurait avoir un arbre binomial de degré (D(n) + 1) dans une file binomiale : par définition, on aurait strictement plus de n éléments dans la file binomiale. Or c'est une file binomiale n !
+
+La file binomiale relâchée n contient quand même toujours n éléments. Si j'admets un arbre binomial de degré (D(n) + 1), j'aurais toujours strictement plus de n éléments, ce qui sera toujours aussi absurde.
+
+Le degré maximal d'un noeud d'une file binomiale relâchée est donc toujours de D(n).
+
+**** Question 3.2.4
+
+On dispose d'un ensemble de primitives bien choisies, et on demande d'écrire deux procédures plus complexes, et de calculer leur complexité.
+
+***** a
+
+ConcatenerFBR : c'est archi débile, on a juste besoin de faire une nouvelle file binomiale relâchée avec les éléments de la file binomiale relâchée 1 puis de la file binomiale relâchée 2.
+
+La complexité est en O(1)
+
+***** b
+
+InsererFBR : c'est aussi giga débile, il suffit juste de rajouter un tournoi binomial B_0 avec v comme étiquette sur son unique noeud dans la file binomiale relâchée existante : la nouvelle chose est bien aussi une file binomiale relâchée.
+
+Là encore, la complexité est en O(1)
+
+En fait, on bouge toute la complexité dans la partie consolidation qui arrive.
+
+**** Question 3.2.5
+
+***** a
+
+Le revers de la simplicité de plus haut.
+
+On doit quand même avoir les éléments de la file binomiale en sortie des tournois binomiaux, qui respectent la croissance stricte dans tous leurs chemins descendants possibles.
+
+On suppose n la taille de la file binomiale connu (au pire on le recalcule, c'est la somme des puissances de 2 des degrés ou hauteurs des tournois qui composent la file)
+
+Je réarrange mes éléments.
+
+Si j'ai deux tournois binomiaux de même taille k, je mets celui dont la racine est la plus grande comme fils de l'autre pour obtenir un tournoi binomial de taille k+1.
+
+Si je n'ai qu'un seul tournoi binomial de taille k, je le laisse tranquille.
+
+Au bout d'un certain nombre d'itérations, je me retrouve forcément avec au plus un exemplaire de tournoi binomial de taille k.
+
+Je les réarrange en taille décroissante :
+
+J'ai bien une file binomiale.
+
+***** b
+
+Soit a(H) le nombre de tournois d'une file binomiale relâchée H.
+
+On part du principe que la seule opération qui coûte 1, c'est la comparaison des racines et des tailles (supposées accessibles).
+
+La greffe d'un tournoi sous un autre ne coûte rien (après qu'on a compté la comparaison des racines, bien entendu), et le réordonnancement final non plus.
+
+Mq le coût de la procédure qu'on vient d'écrire appliquée à une file H de taille n est borné par \alpha * (a(H) + D(n))
+
+Je prends le premier élément, je compare sa taille à celle des autres éléments :
+au pire a(H) - 1 comparaisons.
+Si j'en trouve aucun, je passe au deuxième élément.
+
+
+
+
+* Annexes
+
+Supports de TD :
+
+[[./TD1/TD1.pdf][TD1]]
+[[./TD2/TD2.pdf][TD2]]
 
