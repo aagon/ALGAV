@@ -915,6 +915,17 @@ A = < q, < p, U, < r, V_{1}, V_{2} >, >, W > \to RGD(A) = < r, < p, U, V_{1} >, 
 
 Toutes ces rotations sont très peu coûteuses.
 
+**** Rotation droite-gauche :
+
+A = < q, W, < p, < r, V_{1}, V_{2} >, U > > \to RDG(A) = < r, < q, W, V_{1} >, < p, V_{2}, U > >
+
+*** Primitives
+
+On dispose d'un certain ensemble de primitives sur les AVL :
+- Hauteur(A) : Renvoie la hauteur de l'arbre passé en argument.
+- Les quatre fonctions de rotation mentionnées plus haut.
+- Equilibrage(A) : Suppose que A est un arbre de recherche, que ses sous-arbres sont des AVL, dont les hauteurs diffèrent de 2 au plus. Renvoie l'arbre obtenu en rééquilibrant l'arbre initiale (Détermine laquelle des rotations à appliquer, et l'applique)
+- AVL_Ajout(x, A) : Renvoie l'AVL résultant de l'ajout de x à A.
 
 
 * Cours 3 : 08/10/2019
@@ -924,82 +935,177 @@ Toutes ces rotations sont très peu coûteuses.
 *** Arbre de recherche général
 
 #+BEGIN_DEFINITION
-Dans un arbre 
+Dans un arbre de recherche général :
 
-Chaque noeud contient un k-uplet (e_1 < e_2 < ... < e_k) d'éléments distincts et ordonnées.
+- Chaque noeud contient un k-uplet (e_1 < e_2 < ... < e_k) d'éléments distincts et ordonnées.
 
-Chaque noeud a k+1 sous A_1, ..., A_{k+1} tels que :
+Chaque noeud a k+1 sous-arbres A_1, ..., A_{k+1} tels que :
 - Tous les éléments de A_1 sont < e_1
+- Tous les éléments de A_i sont > e_{i-1} et < e_i pour i allant de 2 à k
+- Tous les éléments de A_{k+1} sont > e_k
 #+END_DEFINITION
 
-Cas particulier :
+Un cas particulier intéressant, particulièrement souvent utilisé :
 
 #+BEGIN_DEFINITION
-Arbres 2-3-4
+Arbres 2-3-4 :
 
-Les noeuds internes contiennent des k-uplets de 1, 2 ou 3 éléments.
+Les noeuds internes contiennent des k-uplets de 1, 2 ou 3 éléments (respectivement appelés des 2-, 3- ou 4-noeuds, avec respectivement 2, 3 et 4 sous-arbres).
 
 Toutes les feuilles sont au même niveau.
 #+END_DEFINITION
 
 #+BEGIN_THEOREM
-h la hauteur d'un arbre 2-3-4 avec n éléments : h \in \Theta(n)
+h la hauteur d'un arbre 2-3-4 avec n éléments : h \in \Theta(log(n))
 #+END_THEOREM
 
 #+BEGIN_PROOF
-Si un arbre n'a que des 2-noeuds (une seule valeur par ) :
+Si un arbre n'a que des 2-noeuds (une seule valeur par noeud) :
 
 h+1 = log_2(n+1)
 
-Si un arbre n'a que des 4-noeuds (3 valeurs par ) :
+Si un arbre n'a que des 4-noeuds (3 valeurs par noeuds) :
 
 h+1 = log_4(n+1)
 #+END_PROOF
 
+#+BEGIN_THEOREM
+Un ensemble de corollaires :
+
+- Tous les sous-arbres d'un arbre 2-3-4 sont des arbres 2-3-4.
+#+END_THEOREM
+
 **** Primitives
 
-On dispose d'un ensemble de primitives utiles, qui pourront être réutilisées en examen.
+On dispose d'un ensemble de primitives utiles, plus pratiques pour les algorithmes plus complexes :
+- EstVide(A)
+- Degre(A) : l'arité à la racine de A (ou l'arité de A si on considère A le noeud racine de l'arbre plutôt que l'arbre lui-même)
+- Contenu(A) : la liste (ordonnée croissante) des éléments de la racine de A (ou la liste de A si on considère A le noeud racine de l'arbre plutôt que l'arbre lui-même)
+- EstDans(x, L) : Est-ce que x est dans la liste L
+- Elem_i(A) : Renvoie le ième élément de la racine de A (+\infty si i est trop grand : genre on a demandé Elem_3 d'un 2-noeud qui ne contient qu'un élément)
+- SsA_i(A) : Renvoie le ième sous-arbre de la racine de A (l'arbre vide si i est trop grand : genre on a demandé SsA_3 d'un 2-noeud qui n'a que 2 sous-arbres)
 
 A partir de ces primitives, on peut donner un algorithme de recherche en pseudo-langage.
 
 **** Recherche d'un élément
 
-En O(log(n))
+On compare l'élément recherché aux éléments du noeud racine. Soit on le trouve, soit on sait au bout de 1-3 comparaisons dans quel sous-noeud on le doit rechercher. Et ainsi de suite.
+
+On comprend aisément que la recherche est meilleure si on a des 4 noeuds (encore qu'on est quand même en O(log(n)) dans tous les cas) :
+
+#+BEGIN_PROOF
+Soit un arbre avec que des 2-noeuds : 1 comparaison par étage, soit log_2(n+1) comparaisons en tout.
+
+Soit un arbre avec que des 4-noeuds : 3 comparaisons par étage dans le pire des cas, soit log_4(3n) comparaisons en tout (log_4(3n))
+
+On sait qu'on se situe entre ces deux cas extrêmes : quoiqu'il en soit, on sait qu'on est en complexité O(log(n)) en le nombre de comparaisons.
+#+END_PROOF
 
 **** Ajout d'un élément
 
-L'ajout est guidé par la recherche.
+L'ajout est guidé par la recherche : on met l'élément où on l'aurait trouvé par la recherche. On s'arrête quand ?
 
-Je rajoute dans le seul noeud dans lequel je peux mettre (de plus bas niveau, bien sûr)
+Déjà, on ne s'arrête que si le noeud est plein ou si on est arrivé en bas.
 
-Si celui-ci est plein, alors on doit éclater le noeud (ce qui implique une modification de la valeur) :
+Si celui-ci est plein, alors on doit éclater le noeud (version éclatement systématique en descente) :
+- On garde un pointeur où on aurait dû mettre l'élément
+- L'élément du mileu devient la racine, le plus petit devient le fils gauche, le plus grand devient le fils droit (même niveau donc).
+- On met l'élément à sa place en recommençant à chercher au pointeur (qu'on a pris la peine de garder avant), dans l'endroit de plus bas niveau.
 
-L'élément du mileu devient la racine, le plus petit devient le fils gauche, le plus grand devient le fils droit (même niveau donc).
+Si on a un éclatement sur une feuille du bas, on doit faire remonter la valeur centrale de l'élément à éclater dans un noeud plus haut (dont on sait qu'il n'est pas plein, puisqu'on vient de le traverser).
 
-On met l'élément à sa place en recommeçant à chercher au pointeur (qu'on a pris la peine de garder avant), dans l'endroit de plus bas niveau.
+***** Aparté, exemple
 
-Le pointeur est un endroit d'où recommencer la recherche après l'éclatement.
+On se propose de construire par ajout successif un arbre 2-3-4 avec les éléments, en utilisant l'algorithme d'éclatement systématique en descente  :
 
-Si on a un éclatement sur une feuille du bas, on doit faire remonter la valeur centrale de l'élément à éclater
+(4, 35, 10, 13, 3, 30, 15, 12, 7, 40, 20, 11, 6)
 
-[faire l'exemple avec les valeurs données]
+| 4 |
 
+| 4, 35 |
+
+| 4, 10, 35 |
+Eclatement ! On garde le pointeur avant 35
+
+|   | 10 |    |
+| 4 |    | 35 |
+On reprend la recherche à partir du pointeur
+
+|   | 10 |       |
+| 4 |    | 13,35 |
+
+|     | 10 |       |
+| 3,4 |    | 13,35 |
+
+|     | 10 |          |
+| 3,4 |    | 13,30,35 |
+Eclatement ! On garde le pointeur avant 30
+
+|     | 10,30 |    |
+| 3,4 |    13 | 35 |
+On reprend la recherche à partir du pointeur
+
+|     | 10,30 |    |
+| 3,4 | 13,15 | 35 |
+
+|     | 10,30    |    |
+| 3,4 | 12,13,15 | 35 |
+
+|       | 10,30    |    |
+| 3,4,7 | 12,13,15 | 35 |
+
+|       | 10,30    |       |
+| 3,4,7 | 12,13,15 | 35,40 |
+Eclatement ! On garde le pointeur après 15
+
+|       |    | 10,13,30 |       |
+| 3,4,7 | 12 | 15       | 35,40 |
+On reprend la recherche à partir du pointeur
+
+|       |    | 10,13,30 |       |
+| 3,4,7 | 12 | 15,20    | 35,40 |
+Eclatement ! On garde le pointeur avant 13
+
+|       |    |    | 13 |       |    |       |
+|       | 10 |    |    |       | 30 |       |
+| 3,4,7 |    | 12 |    | 15,20 |    | 35,40 |
+On reprend la recherche à partir du pointeur
+
+|       |    |       | 13 |       |    |       |
+|       | 10 |       |    |       | 30 |       |
+| 3,4,7 |    | 11,12 |    | 15,20 |    | 35,40 |
+Eclatement ! On garde le pointeur avant 7
+
+|   |      |       | 13 |       |    |       |
+|   | 4,10 |       |    |       | 30 |       |
+| 3 |    7 | 11,12 |    | 15,20 |    | 35,40 |
+On reprend la recherche à partir du pointeur
+
+|   |      |       | 13 |       |    |       |
+|   | 4,10 |       |    |       | 30 |       |
+| 3 | 6,7  | 11,12 |    | 15,20 |    | 35,40 |
+
+***** Fin de l'aparté
+
+#+BEGIN_THEOREM
 On ne peut faire croître la hauteur de l'arbre qu'en éclatant la racine.
+#+END_THEOREM
 
+On a deux manières de déterminer quand faire un éclatement :
 - Eclatement systématique en descente (présenté ici : on éclate dès qu'on rencontre un noeud plein)
 - Eclatement en remontée (on éclate que si on rencontre un noeud plein tout au bout)
 
 ***** Avantages et inconvénients
 
 En descente :
-- Parcours uniquement de haut en bas (+)
-- Transformation très locale (on éclate un noeud, et on remonte pas plus haut que le père) (+)
-- Taux d'occupation plus faible (-)
+- Parcours uniquement de haut en bas (seulement besoin de pointeurs simples) (+)
+- Transformation très locale (on éclate un noeud, et on remonte pas plus haut que le père : nécessite un unique pointeur supplémentaire) (+)
+- Taux d'occupation plus faible (moins bon pour la recherche) (-)
 - Hauteur plus grande (-)
 
 En remontée :
 - Parcours dans les deux sens (double pointeurs, empreinte mémoire) (-)
-- Transformation en chaîne de proba non-nulle (-)
+- Transformation en chaîne de proba non-nulle (même de proba 1 en n le nombre d'ajouts) (-)
 - Taux d'occupation plus fort (+)
 - Hauteur plus petite (+)
 
