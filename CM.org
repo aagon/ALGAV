@@ -1114,15 +1114,17 @@ En remontée :
 Structure ultra-majoritaire des bases de données.
 Existe depuis 30 ans.
 
-Implémenté en C++ dans la bibliothèque stxxl.
+Implémenté en C++ dans la bibliothèque stxxl. Oracle et Google ont aussi des implémentations à eux.
 
-On veut blinder les noeuds
+L'idée est de limiter autant qu'il est possible les défauts de page, de manière à éviter les accès disques.
+
+Pour cette raison, on veut blinder les noeuds de données, de manière à ce qu'un noeud occupe à peu près une page mémoire. Et savoir exactement quelle page mémoire aller chercher sur le disque si on a suffisemment peu de chance pour en avoir besoin.
 
 #+BEGIN_DEFINITION
 Arbre-B d'ordre m est un arbre de recherche
 
 Arbre de recherche dont les noeuds contiennent k éléments, k entre m et 2m.
-Sauf la racine qui contient entre 1 et 2 m.
+Sauf la racine qui contient entre 1 et 2m.
 
 Toutes les feuilles sont situées au même niveau.
 #+END_DEFINITION
@@ -1133,14 +1135,36 @@ Hauteur d'un B-arbre d'ordre m contenant n éléments
 log_{2m+1}(n+1) \leq h + 1 \leq 1 + log_{m+1}((n+1)/2)
 #+END_THEOREM
 
+La hauteur diminue énormément en m. La hauteur doit être aussi petite que possible, car passer d'un noeud à un de ses fils consiste précisément en faire cette entrée/sortie disque tant redoutée.
+
 On choisit m tel que le contenu de la racine doit pouvoir être stocké en RAM. Un noeud doit tenir dans une page.
 Les autres noeuds seront stockés dans le disque.
 
-1 éclatement implique écrire deux pages en disque.
+1 éclatement implique écrire deux pages en disque (très cher)
 
 #+BEGIN_THEOREM
 Le nombre d'éclatement par clé dans la construction par adjonctions successives d'un B-arbre d'ordre m est compris entre 1/(2m) et 1/m.
 #+END_THEOREM
+
+#+BEGIN_PROOF
+Deux cas de figure extrêmes après ajout successif de tous les n éléments :
+
+- Soit tous les noeuds (y compris la racine) ont leur nombre maximal d'éléments, on a donc le nombre de noeuds donné par n/2m
+- Soit tous les noeuds (y compris la racine) ont leur nombre minimal d'éléments, on a donc le nombre de noeuds donné par 1 + (n-1)/m
+
+Le nombre total d'éclatements étant égal au nombre de noeuds final après ajout de tous les éléments, on a E le nombre d'éclatements \in [n/2m ; n/m]
+#+END_PROOF
+
+#+BEGIN_THEOREM
+Résultats supplémentaires :
+
+1 éclatement pour 1.38m adjonctions
+Un B-arbre d'ordre m contenant n éléments aléatoires comporte 1.44n/m noeuds.
+#+END_THEOREM
+
+#+BEGIN_PROOF
+Preuve : Bla bla Fibonacci bla bla bla, ou un truc du genre.
+#+END_PROOF
 
 *** Arbres auto-adaptatifs
 
@@ -1148,7 +1172,7 @@ Le nombre d'éclatement par clé dans la construction par adjonctions successive
 Un arbre auto-adaptatif est un arbre binaire de recherche tel qu'à chaque recherche, ajout, suppression, le dernier élément visité est remonté à la racine par une suite de rotations.
 #+END_DEFINITION
 
-Quand je fais remonter qqch de très profond, l'arbre résultant est plutôt équilibré.
+Intuition : Quand je fais remonter qqch de très profond, l'arbre résultant est plutôt équilibré.
 
 #+BEGIN_THEOREM
 Fonction de potentiel d'un arbre T
@@ -1160,6 +1184,10 @@ La fonction de potentiel T est donnée par :
 \Phi(T) = \sum_{x \in T} r(x), avec r(x) = log_2(w(x)), rang de x.
 #+END_THEOREM
 
+Le coût au pire cas est en O(n), cher. Mais en fait, un opération coûteuse (ramener un truc de tout au fond) accélère grandement les opérations futures, simplement parce qu'on rééquilibre énormément l'arbre.
+
+L'analyse par potentiel permet de monter que pour toute suite de m opérations, le coût est en O(m log(n)).
+
 ** Tries
 
 Structures dont les clés sont des chaînes de caractère. Adaptation des structures précédentes.
@@ -1168,14 +1196,19 @@ Les clés sont définissables caractère par caractère : on peut la voir bit pa
 
 L'idée est de partager les préfixes de deux mots par exemple.
 
-On veut effectuer la recherche, insérer, supprimer des clés.
-On veut pouvoir faire la liste en ordre alphanumérique.
-Recherche partiellement spécifiées (regex)
-Recherche du plus long préfixe dans S d'un mot donné.
+Opérations souhaitées :
+- On veut effectuer la recherche, insérer, supprimer des clés.
+- On veut pouvoir faire la liste en ordre alphanumérique.
+- Recherche partiellement spécifiées (regex)
+- Recherche du plus long préfixe dans S d'un mot donné.
 
 *** Primitives
 
-On a un ensemble de primitives utiles, qui vont permettre dé
+On a un ensemble de primitives utiles, qui vont permettre de définir des algorithmes de plus haut niveau :
+- prem(cle) : renvoie le premier caractère de la clé
+- reste(cle) : Renvoie la clé, sans son premier caractère
+- car(cle, i) : Renvoie le ième caractère de la clé
+- lgueur(cle) : Renvoie le nombre de caractères de la clé
 
 *** DST (Arbres digitaux)
 
@@ -1189,9 +1222,12 @@ La structure de l'arbre va dépendre de l'ordre d'insertion.
 
 On doit décaler l'espace des caractères à écrire au "centre" de l'espace des caractères pouvant être écrits (en terme de nombre de bits) ou alors s'assurer ce que les éléments encodés sont uniformément répartis sur l'espace d'écriture.
 
-Idéalement, on doit commencer par insérer du milieu d'alphabet (le truc le plus proche de :
-10000000
-soit la valeur à égale distance de 00000000 et de 11111111)
+Idéalement, on doit commencer par insérer du milieu d'alphabet (le truc le plus proche de 0b10000000
+soit la valeur à égale distance de 0b00000000 et de 0b11111111)
+
+#+BEGIN_THEOREM
+Le recherche ou l'ajout d'une clé dans un DST contenant n clés nécessite en moyenne log(n) comparaisons de clés, et au pire L (nombre maximum de bits d'une clé)
+#+END_THEOREM
 
 *** Arbres lexicographiques
 
@@ -1205,7 +1241,7 @@ Pour chaque noeud vide dont les bits depuis la racine sont donnés par w un vect
 Les clés sont en ordre croissant d'encodage.
 La hauteur maximale est donnée par le nombre de bits d'encodage.
 
-Notion de Patricia tries : on fusionne les noeuds qui n'ont qu'un fils avec le fils.
+Notion de Patricia tries : on fusionne les noeuds qui n'ont qu'un fils avec le fils (on doit noter qqpart que l'arête qui va dans ce nouveau noeud est en fait plusieurs arêtes en une, donc plusieurs bits déterminés d'un coup)
 
 *** R-Tries
 
@@ -1219,7 +1255,13 @@ Recherche, ajout et suppression se fait par parcours de branche.
 La structure ne dépend pas de l'ordre d'insertion.
 #+END_THEOREM
 
-Par exemple, un 26-trie peut avoir tous les mots de la langue française en une structure unique (pourvu qu'on écrive pas les accents).
+Par exemple, un 26-trie peut avoir tous les mots de la langue française en une structure unique (pourvu qu'on n'écrive pas les accents).
+
+#+BEGIN_THEOREM
+Le recherche ou l'ajout d'une clé dans un R-trie contenant n clés nécessite en moyenne log(n) comparaisons de caractères, et au pire L (nombre maximum de bits d'une clé).
+#+END_THEOREM
+
+Le problème de cette structure vient de son empreinte mémoire. On a besoin de R pointeurs par noeud, la plupart d'entre eux vides. En plus, les langages naturels ne débouchent pas sur des 26-trie équilibrés : on a beaucoup plus de mots qui commencent par a que z.
 
 *** Trie hybride
 
