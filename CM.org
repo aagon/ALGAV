@@ -750,7 +750,6 @@ Un parcours est donné par :
 $\mathcal{B} \to$ Liste(sommets)
 #+END_DEFINITION
 
-#+BEGIN_EXAMPLE
 On a plusieurs parcours fréquemment utilisés.
 
 Le parcours préfixe :
@@ -772,7 +771,7 @@ Le parcours suffixe :
 SUF(B) = [SUF(G), SUF(D), visit(\bullet)]
 
 Chaque parcours envoie en ordre différent la liste.
-#+END_EXAMPLE
+
 
 #+BEGIN_DEFINITION
 On peut compléter les noeuds vides par une feuille. L'arbre obtenu s'appelle le complété. L'arbre complété à n noeuds a en plus n + 1 feuilles
@@ -1272,6 +1271,41 @@ Chaque noeud contient un caractère et une valeur. Chaque neoud a trois pointeur
 #+END_DEFINITION
 
 
+* Cours 4 : 15/10/2019
+
+Cours de Binh-Minh Bui-Xuan
+
+Géométrie algorithmique
+DirectX, OpenGL
+Calculs dans les cartes graphiques
+
+#+BEGIN_DEFINITION
+Collision entre deux objets géométriques a lieu sssi l'intersection est non-nulle.
+#+END_DEFINITION
+
+*** Exercice :
+
+Soient deux cercles c1 et c2 de rayon respectif c1.radius et c2.radius dont les centres sont donnés par (c1.x, c1.y) et (c2.x, c2.y). Déterminer une condition nécessaire et suffisante pour que les deux cercles s'intersectent.
+
+Mathématiquement, c'est simple :
+
+Il faut et il suffit que la distance entre les centres soit inférieure à la somme des rayons des deux cercles.
+
+Si on l'exprime de manière formelle, on a :
+
+sqrt((c1.x - c2.x)^2 + (c1.y - c2.y)^2) \leq c1.radius + c2.radius
+
+Le but de l'exercice n'est bien évidemment pas de 
+
+
+
+
+Exercice :
+
+[réponse ici]
+
+
+
 * Annexes
 
 Support des cours :
@@ -1279,8 +1313,8 @@ Support des cours :
 [[./CM1/cours1.pdf][Cours 1]]
 [[./CM2/cours2.pdf][Cours 2]]
 
+Support des cours BMBX :
 
-
-
+[[./CM3/coursBMBX1.pdf][Cours 1]]
 
 

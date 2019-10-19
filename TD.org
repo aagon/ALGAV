@@ -245,7 +245,7 @@ On remarque que le premier résultat implique f \in o(g) (donc f \in O(g)), le d
 
 * TD 2 : 03/10/2019
 
-** TD 1, suite
+** TD 2
 
 *** Exercice 2.1
 
@@ -598,6 +598,482 @@ Si j'en trouve aucun, je passe au deuxième élément.
 
 
 
+
+* TD 3 : 10/10/2019
+
+** TD 3
+
+*** Question 1.1.1
+
+Le père d'un 4-noeud ne peut pas être un 4-noeud dans le cas d'un éclatement systématique à la descente.
+
+*** Question 1.1.2
+
+| 8 |
+
+| 3,8 |
+
+| 2,3,8 |
+Eclatement ! On garde un pointeur avant 8
+
+|   | 3 |   |
+| 2 |   | 8 |
+On reprend la recherche avant 8
+
+|   | 3 |     |
+| 2 |   | 4,8 |
+
+|     | 3 |     |
+| 1,2 |   | 4,8 |
+
+|     | 3 |        |
+| 1,2 |   | 4,8,15 |
+Eclatement ! On garde un pointeur avant 15
+
+|     | 3,8 |    |
+| 1,2 |   4 | 15 |
+On reprend la recherche avant 15
+
+|     | 3,8 |       |
+| 1,2 |   4 | 10,15 |
+
+|     | 3,8 |         |
+| 1,2 |   4 | 9,10,15 |
+Eclatement ! On garde un pointeur avant 10
+
+|     | 3,8,10 |   |    |
+| 1,2 |      4 | 9 | 15 |
+On reprend la recherche avant 15
+
+|     | 3,8,10 |   |       |
+| 1,2 |      4 | 9 | 11,15 |
+Eclatement ! On garde un pointeur avant 8
+
+|     |   |     | 8 |   |    |       |
+|     | 3 |     |   |   | 10 |       |
+| 1,2 |   | 4,7 |   | 9 |    | 11,15 |
+On reprend la recherche avant 8
+
+|     |   |       | 8 |   |    |       |
+|     | 3 |       |   |   | 10 |       |
+| 1,2 |   | 4,6,7 |   | 9 |    | 11,15 |
+
+|     |   |       | 8 |   |    |          |
+|     | 3 |       |   |   | 10 |          |
+| 1,2 |   | 4,6,7 |   | 9 |    | 11,13,15 |
+Eclatement ! On garde un pointeur avant 13
+
+|     |   |       | 8 |   |       |    |
+|     | 3 |       |   |   | 10,13 |    |
+| 1,2 |   | 4,6,7 |   | 9 |    11 | 15 |
+On reprend la recherche avant 13.
+
+|     |   |       | 8 |   |       |    |
+|     | 3 |       |   |   | 10,13 |    |
+| 1,2 |   | 4,6,7 |   | 9 | 11,12 | 15 |
+Eclatement ! On garde un pointeur avant 6.
+
+|     |     |   | 8 |   |       |    |
+|     | 3,6 |   |   |   | 10,13 |    |
+| 1,2 |   4 | 7 |   | 9 | 11,12 | 15 |
+On reprend la recherche avant 6.
+
+|     |     |   | 8 |   |       |    |
+|     | 3,6 |   |   |   | 10,13 |    |
+| 1,2 | 4,5 | 7 |   | 9 | 11,12 | 15 |
+
+|     |     |   | 8 |   |       |       |
+|     | 3,6 |   |   |   | 10,13 |       |
+| 1,2 | 4,5 | 7 |   | 9 | 11,12 | 14,15 |
+
+|     |     |   | 8 |   |       |          |
+|     | 3,6 |   |   |   | 10,13 |          |
+| 1,2 | 4,5 | 7 |   | 9 | 11,12 | 14,15,16 |
+Eclatement ! On garde un pointeur après 16.
+
+|     |     |   | 8 |   |          |    |    |
+|     | 3,6 |   |   |   | 10,13,15 |    |    |
+| 1,2 | 4,5 | 7 |   | 9 | 11,12    | 14 | 16 |
+On reprend la recherche avant 16.
+
+|     |     |   | 8 |   |          |    |       |
+|     | 3,6 |   |   |   | 10,13,15 |    |       |
+| 1,2 | 4,5 | 7 |   | 9 | 11,12    | 14 | 16,17 |
+
+*** Question 1.2.1
+
+Arbre bicolore what ?
+
+#+BEGIN_DEFINITION
+Arbre bicolore de recherche est un arbre binaire de recherche complété (on créé des feuilles sur les noeuds vides), dans lequel tout noeud possède une couleur (blanc-rouge) et tout noeud interne possède une clé et qui vérifie :
+
+- La racine est blanche
+- Les feuilles (noeuds vides) sont blanches
+- Le père d'un noeud rouge est blanc (soit les enfants d'un noeud rouge sont blancs).
+- Les noeuds (au nombre maximum de 2 : arbre binaire) non-vides issus d'un même père ont la même couleur.
+- Le chemin de n'importe quel noeud à n'importe quelle feuille (noeud vide, blanc donc) traverse toujours le même nombre de noeuds blancs. (en particulier, c'est vrai depuis la racine : dans ce cas, le nombre de noeuds blancs traversés s'appelle la hauteur blanche)
+#+END_DEFINITION
+
+Remarque : on remplacera blanc par noir (la littérature parle de red-black tree, soit arbre rouge-noir)
+
+#+BEGIN_THEOREM
+Corollaires :
+
+La seule manière dont deux noeuds issus d'un même père peuvent être de couleur différente est :
+- le père est blanc
+- un seul des deux noeuds est vide, donc une feuille, donc est blanc. L'autre a un père blanc, il est donc rouge.
+#+END_THEOREM
+
+#+BEGIN_THEOREM
+Il existe une transformation d'un arbre 2-3-4 en arbre bicolore :
+
+- L'arbre vide est transformé en une feuille, nécessairement blanche.
+- Chaque 2-noeud (qui a donc une clé) est de couleur blanche, ses deux sous-arbres sont rendus en arbres bicolores.
+- Chaque 3-noeud (qui a donc deux clés a < b) se voit éclater (soit b est la racine du ssa droit de a, soit a est la racine du ssa gauche de b). Le fils est mis en rouge, et le père en blanc. Les trois sous-arbres du 3-noeud sont transformés en arbre bicolore et 2 sont mis en sous-arbre du fils et 1 est mis en sous-arbre du père (on sait exactement lesquels, une seule possibilité).
+- Chaque 4-noeud (qui a donc trois clés a < b < c) se voit éclater (a est la racine du ssa gauche de b et c est la racine du ssa droit de b). Les fils sont mis en rouge et le père est mis en noir : les 4 sous-arbres sont les sous-arbres de a et c.
+#+END_THEOREM
+
+Illustrer le principe énoncé.
+
+*** Question 1.2.2
+
+[à refaire, facile mais chiant]
+
+*** Question 1.2.3
+
+On se propose de formaliser l'algorithme écrit plus haut.
+
+On part de la racine :
+- soit il est vide : on en fait une feuille blanche.
+- soit c'est un 2-noeud : on le transforme en noeud blanc
+- soit c'est un 3-noeud : on choisit une des deux clés, on en fait le père ou le fils de l'autre, c'est au choix : par contre, on place le fils du bon côté (c'est facile, il n'y en a qu'un seul), et on met le fils en rouge, et le père en blanc. Les trois sous-arbres de l'ancien noeud sont plaçables de manière unique comme sous-arbres du fils et du père (2 sous-arbres pour le fils, 1 sous-arbre pour le père) 
+- Soit c'est un 4-noeud : les deux clés extrêmes sont faits fils gauche (le + petit) et droit (le + grand) de la clé centrale : une manière unique de les placer, on les met en rouge, on met le père en blanc. Les 4 sous arbres du noeud qu'on vient de transformer sont plaçables de manière unique comme les sous-arbres du fils de gauche et de droite.
+
+On définit le truc de manière récursive : on transforme les sous-arbres en premier dans le corps de la fonction.
+
+*** Question 1.2.4
+
+Est-ce que la résultante est bien un arbre bicolore ?
+
+- La racine est bien blanche : quelle qu'était la taille du noeud qu'on a cassé pour en faire la racine, on a fait ce noeud le père de zéro, un ou deux autres noeuds
+- Les noeuds vides sont bien blancs
+- Le père de tous les noeuds rouges est bien un noeud blanc : les seuls noeuds rouges qu'on a créé sont des fils de noeuds blancs créés en même temps.
+
+Induction forte pour la quatrième propriété :
+
+Vrai à hauteur 1 de la racine : qu'on soit rouge ou blanc, on a une seule arête à prendre, et elle débouche forcément sur une feuille (contruction)
+
+On se place à hauteur k de la racine, et on suppose la chose vraie.
+
+On remonte d'un noeud : soit on est rouge, on traverse autant de noeuds blancs qu'avant. Soit on est blanc, on traverse un noeud blanc de plus qu'avant dans tous les cas de manière uniforme.
+
+On peut encadrer la hauteur de l'arbre bicolore comme ça :
+
+(meilleur cas : on ne casse jamais) h_{234} \leq b_{bic} \leq 2 * h_{234} (pire cas : on casse à chaque fois)
+
+Si on part du principe qu'on ne compte pas les feuilles (ou qu'on les compte) de la même manière dans les deux cas.
+
+*** Question 1.3.1
+
+Transformation inverse :
+
+- On part de la racine
+- On prend tous les fils rouges (il y en a au plus 2) : si il y en a 2, on les prend pour faire un 4-noeud, si il y en a 1, on le prend pour faire un 3-noeud, si il n'y en a pas, on laisse le noeud tel quel.
+- Les sous arbres des noeuds rouges absorbés sont les sous-arbres du nouveau {2,3,4}-noeud : si on a 2 fils rouges, on créé un 4-noeud et on a bien 4 sous-arbres. si on a fils rouge, on créé un 3-noeud, et on a bien 3 arbres (les deux du fils, plus l'ancien non-rouge du père), si on a 0 fils rouge, on ne fait rien.
+
+Fini. (récursivité, blabla)
+
+*** Question 1.3.2
+
+Même question que la précédente (on ne s'embêtera pas à écrire du pseudo-langage).
+
+*** Question 1.4.1
+
+**** RotationDroite(T) :
+
+Soit un arbre A = < q, < p, U, V >, W > avec U l'arbre de hauteur supérieure de 1 à V.
+
+La hauteur de U est supérieure de 2 celle de W (placé plus bas, plus hauteur plus élevée)
+
+On a V inférieur à q, et V supérieur à p.
+
+RD(A) = < p, U, < q, V, W > >
+
+On remonte la racine du sous-arbre fautif tout en haut.
+
+On met U l'arbre trop grand comme ssa gauche de p la nouvelle racine. q est le sous-neoud droit, a V comme sous-arbre droit et W comme sous-arbre gauche.
+
+**** RotationGaucheDroite(T) :
+
+Soit A = < q, < p, < U, < r, V1, V2 > >, W > avec V1 l'arbre de hauteur supérieure de 1 à V2.
+
+On a un déséquilibre entre V1 et W (2 de hauteur de différence).
+
+On fait remonter la racine du sous-arbre fautif tout en haut. On remet les noeuds p et q à leur place (une seule). On met les sous-arbres U, V1, V2, et W à leur place (il n'y en a qu'une pour chacun de ces arbres.)
+
+RGD(A) = < r, < p, U, V_{1} >, < q, V_{2}, W > >
+
+La différence de hauteur maximale est entre U, V1 et W d'une part, et V2 d'autre part, et est au maximum de 1.
+
+*** Question 1.5.1
+
+Transposer dans un arbre bicolore les différents cas d'insertion d'une clé dans une feuille d'un arbre 2-3-4.
+
+On se met dans le cas de l'éclatement systématique en descente.
+
+On fait la recherche de manière classique : on ne s'arrête que si on est arrivé en bas. Si on rencontre un noeud dont les deux fils sont rouges, on doit éclater (on sait que ce noeud est noir) :
+
+- On colorie ce noeud en rouge (équivalent de renvoyer l'élément central un noeud plus haut)
+- On colorie ses deux fils en noir (équivalent de les mettre dans des noeuds où ils sont seuls)
+
+On reprend la recherche au noeud rouge qu'on a colorié en noir et on va jusqu'en bas, à la place unique à laquelle on peut aller.
+
+Des fois, on doit quand même faire des rotations.
+
+On a juste soit RD, RG, RGD, RDG et des intervertissements de couleur. (sachant qu'on doit avoir la racine toujours blanches)
+
+*** Question 1.5.2
+
+On a déjà répondu à la question.
+
+*** Question 1.5.3
+
+[On a besoin de la question 1.2.2]
+
+*** Question 1.5.4
+
+Déjà écrit.
+
+#+BEGIN_SRC c
+  insertion(A, cle)
+  {
+	  if (!Sous-arbres-vides(A)) {
+		  if (Sous-noeud-gauche-rouge(A) && Sous-noeud-droit-rouge(A)) {
+			  eclatement(A);
+		  }
+
+		  if (cle < clef(A)) {
+			  insertion(sous-noeud-gauche, cle);
+		  } else {
+			  insertion(sous-noeud-droit, cle);
+		  }
+	  }
+
+	  insertion_feuille(A, cle);
+	  return;
+  }
+#+END_SRC
+
+Très très moche. On part du principe que toutes les sous-fonctions sont bien écrites.
+Et récursif en plus.
+
+[Refaire un vrai code à la maison, en C]
+
+*** Question 1.5.5
+
+Analysons l'algorithme du Cormen :
+
+Ecrivons-le en C.
+
+#+BEGIN_SRC c
+  arbre_inserer(T, z)
+  {
+	  int y = 0;
+	  int x = racine(T);
+
+	  while (!empty(x)) {
+		  y = x;
+		  if (cle(z) < cle(x)) {
+			  x = gauche(x);
+		  } else {
+			  x = droite(x);
+		  }
+	  }
+
+	  pere(z) = y;
+
+	  if (empty(y)) {
+		  racine(T) = z;
+	  } else if (cle(z) < cle(y)) {
+		  gauche(y) = z;
+		  droite(x) = z;
+	  }
+
+	  return;
+  }
+#+END_SRC
+
+* TD 4 : 17/10/2019
+
+** TD 2, suite
+
+*** Question 2.1.1
+
+Arbre binaire de recherche :
+
+[Fait à la feuille]
+
+*** Question 2.1.2
+
+Pareil
+
+[Fait à la feuille]
+
+*** Question 2.1.3
+
+La structure de l'arbre lexicographique ne dépend pas de l'ordre d'insertion.
+La structure de l'arbre digital dépend de la structure.
+La structure de l'arbre binaire de recherche dépend de la structure.
+
+*** Question 2.1.4
+
+[Fait au tableau]
+
+*** Question 2.2.1
+
+[Fait au papier]
+
+*** Question 2.2.2
+
+[Fait au tableau]
+
+*** Exo perso Maximilien
+
+[à refaire]
+
+*** Question 2.2.3
+
+Arbre de la Briandais.
+
+Assez brillant.
+
+[On s'entraînera à réexpliquer le principe]
+
+[Fait au tableau, compliqué à dessiner]
+
+*** Question 2.2.4
+
+On aurait besoin de tete(n), de queue(n), et de BRD(car, )
+
+*** Question 2.2.5
+
+#+BEGIN_SRC c
+  struct noeud {
+	  char lettre;
+	  struct noeud *frere;
+	  struct noeud *fils;
+  };
+
+  char tete(char *chaine)
+  {
+	  return *chaine;
+  }
+
+  char *queue(char *chaine)
+  {
+	  return chaine + 1;
+  }
+
+  struct noeud *insertion_nul(struct noeud *racine, char *chaine)
+  {
+	  struct noeud *cur = racine;
+	  cur = malloc(sizeof(struct noeud));
+
+	  while (*chaine != '\0') {
+		  cur->lettre = tete(chaine);
+
+		  cur->fils = malloc(sizeof(struct noeud));
+		  cur->fils->fils = NULL;
+		  cur->fils->frere = NULL;
+		  cur->fils->lettre = '\0';
+
+		  cur->frere = NULL;
+		  chaine = queue(chaine);
+
+		  cur = cur->fils;
+	  }
+
+	  return racine;
+
+  }
+
+  struct noeud *place_fratrie(struct noeud *grand_frere, char caractere)
+  {
+	  struct noeud *cur = grand_frere;
+	  for (; cur != NULL; cur = cur->frere) {
+		  if (caractere == cur->lettre) return cur;
+
+		  if (caractere > cur->frere->lettre) {
+			  struct noeud *nouv = malloc(sizeof(struct noeud));
+			  nouv->lettre = caractere;
+			  nouv->frere = cur->frere;
+			  nouv->fils = malloc(sizeof(struct noeud));
+
+			  nouv->fils->lettre = '\0';
+			  nouv->fils->fils = NULL;
+			  nouv->fils->frere = NULL;
+
+			  cur->frere = nouv;
+
+			  return nouv;
+		  }
+	  }
+
+	  cur = malloc(sizeof(struct noeud));
+	  cur->frere = NULL;
+	  cur->lettre = caractere;
+	  cur->fils = malloc(sizeof(struct noeud));
+
+	  cur->fils->lettre = '\0';
+	  cur->fils->fils = NULL;
+	  cur->fils->frere = NULL;
+
+	  return cur;
+  }
+
+  struct noeud *insertion(struct noeud *racine, char *chaine)
+  {
+	  /* Probablement pas nécessaire */
+	  /* if (racine == NULL) return insertion_nul(racine, chaine); */
+
+	  struct noeud *cur = racine;
+
+	  while (*chaine != '\0') {
+		  cur = place_fratrie(cur, *chaine);
+		  cur = cur->fils;
+		  ++chaine;
+	  }
+
+	  return racine;
+  }
+
+  struct noeud *suppression(struct noeud *racine, char *chaine)
+  {
+  }
+#+END_SRC
+
+*** Question 2.3.1
+
+[Fait sur papier]
+[A refaire si on trouve un formalisme]
+
+*** Question 2.3.2
+
+Cette question ne veut rien dire de toute façon, on a probablement plein de manière de choisir nos primitives.
+
+On va écrire une primitive qui donne le plus grand radical commun de deux chaines de caractère. (avec une règle en plus : si un des deux paramètres est la chaine vide, c'est l'autre qui est rendu).
+
+*** Question 2.3.3
+
+Un patricia trie est un tableau de chaines de caractères, dont le nombre d'éléments est donné par le nombre de lettres de notre alphabet.
+
+#+BEGIN_SRC c
+
+#+END_SRC
+
+Chaines très longues et avec peu de radicaux communs sont très mauvaises en Patricia tries.
+
+[On va faire le code C de l'insertion]
 
 * Annexes
 
