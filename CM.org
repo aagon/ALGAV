@@ -1295,15 +1295,92 @@ Si on l'exprime de manière formelle, on a :
 
 sqrt((c1.x - c2.x)^2 + (c1.y - c2.y)^2) \leq c1.radius + c2.radius
 
-Le but de l'exercice n'est bien évidemment pas de 
+Le but de l'exercice n'est bien évidemment pas de donner ce résultat évident, mais de voir comment l'implémenter.
 
+Simplement tester la condition (sqrt((c1.x - c2.x)^2 + (c1.y - c2.y)^2) \leq c1.radius + c2.radius) n'est pas la bonne chose à faire, car la racine carrée coûte très cher à calculer.
 
+Cette condition est équivalente à la condition suivante (les distances sont toujours positives) : (c1.x - c2.x)^2 + (c1.y - c2.y)^2) \leq (c1.radius + c2.radius)^2
 
+Et apparemment, on aurait envie de se débarasser du carré (une sombre histoire de bibliothèque Java externe, admettons) :
 
-Exercice :
+La bonne manière est de stocker dans une variable la valeur c1.x - c2.x, multiplier cette variable par elle-même, et faire de même pour les autres.
 
-[réponse ici]
+*** Problème du cercle minimum
 
+On veut donner le plus petit cercle qui couvre tous les points d'une liste (d(point, centre) \leq rayon)
+
+On dispose de deux résultats mathématiques :
+
+#+BEGIN_THEOREM
+Lemme 1
+
+Si un cercle de diamètre égal à la distance de deux points de la liste couvre tout autre point de la liste, alors ce cercle est un cercle couvrant de rayon minimum.
+#+END_THEOREM
+
+#+BEGIN_THEOREM
+Lemme 2
+
+En 2D, il existe un unique cercle passant par 3 points non-colinéaires.
+#+END_THEOREM
+
+#+BEGIN_THEOREM
+Lemme 3 (personnel)
+
+En 2D, il existe un unique cercle passant par les N sommets d'un polygone régulier. La preuve suit naturellement de la définition d'un polygone régulier.
+#+END_THEOREM
+
+Par contre, on ne peut pas dire que parce qu'un cercle couvre les deux points dont la distance est la plus grande de tous les points du nuage deux à deux, alors il couvre tous les points du nuage.
+
+Le contre-exemple est donné par le triangle équilatéral : si le nuage est réduit à trois points qui constituent les sommets d'un triangle équilatéral, alors un cercle de diamètre d'un des côtés du triangle ne couvrira pas le troisième point.
+
+C'est à ce moment-là qu'on fait intervenir le deuxième lemme.
+
+Le troisième lemme intervient pour les cas où on a plus de trois distances entre deux points dans le nuage.
+
+En gros, on peut s'en servir pour démontrer que quelque soit N le nombre de distances égales entre elles et maximales dans le nuage, alors il existe un unique cercle qui passe par les m points qui définissent ces distances maximales. [Résultat de géométrie non trivial à vérifier et démontrer.]
+
+#+BEGIN_THEOREM
+Le problème du cercle minimum peut être résolu en temps O(n^4).
+#+END_THEOREM
+
+A-t-on un algorithme qui prouve ce théorème ?
+
+Solution personnelle (je ne me rappelle plus de ce que le cours disait) :
+On a 2 parmi n couple de points dans le nuage de n points, soit (n^2 - n) / 2.
+
+On constitue ces couples et on calcule leur distance à la volée : O(7n^2)
+On trie ces distances de la plus à la moins grande (on dit quicksort) : log(n^2)
+On ne garde que les N strictement plus grandes que toutes les autres : O(cn)
+
+Selon la valeur de N, on construit le cercle, en partant du principe qu'on a toujours une manière fixe de le faire (et en fait c'est le cas, mais j'ai la flemme de le redémontrer).
+
+La complexité en calcul de l'ALU d'une distance est de 3 calculs (2 carrés et une addition), soient 7 additions.
+
+Donc la complexité au pire cas : 7n^2 + log(n^2) + O(cn), soit O(n^2)
+
+La vraie bonne solution, en O(n) au pire cas, c'est l'algorithme incrémental :
+
+- On trace le cercle de diamètre des deux premiers éléments de la liste : négligeable
+- On vérifie si les points suivants sont dans le cercle : 1 comparaison entre une distance carrée et un rayon carré (13 additions) : si oui, on passe au suivant, sinon on remplace le cercle par le cercle :
+
+de rayon = (d(C,S) + ancien rayon) / 2 (un calcul de distance déjà fait et un shift de 1 bit : 1 ALU)
+et de centre en le point à rayon distance de S sur la droite CS (applique le vecteur, tya compris : 2 ALU, 1 pour les abscisses, 1 pour les ordonnées)
+
+Et tu refais ça jusqu'à arriver jusqu'à la fin de la liste. A la fin de la liste, le cercle que tu as, c'est le cercle minimum qui couvre tous les points.
+
+On a bien une complexité O(n) au pire cas : à chaque comparaison/mise à jour, on a un certain nombre (on va dire C au maximum) d'opérations qui ne dépendent pas de n, ce qui fait une complexité de Cn au pire cas, soit O(n).
+
+*** Idées supplémentaires
+
+La lazy evaluation : Quand on veut tester une condition complexe (c'est-à-dire la résultante d'une opération logique sur des conditions simples), on prend bien garde à mettre la condition la moins coûteuse en premier.
+
+Le compilateur s'arrangera pour produire du code assembleur qui évitera la deuxième condition, si ça vaut le coût bien sûr.
+
+#+BEGIN_DEFINITION
+"Le big data, c'est quand ça tient pas dans la RAM."
+
+Binh-Minh Bui Xuan, 2019
+#+END_DEFINITION
 
 
 * Annexes

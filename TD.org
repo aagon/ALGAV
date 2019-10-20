@@ -737,7 +737,11 @@ Illustrer le principe énoncé.
 
 *** Question 1.2.2
 
-[à refaire, facile mais chiant]
+|     |   |   |     |   |     |   | 8 |   |      |    |      |    |    |      |    |      |
+|     |   | 3 |     |   |     |   |   |   |      |    |      | 13 |    |      |    |      |
+|     | 2 |   |     |   | 6,r |   |   |   | 10,r |    |      |    |    | 15,r |    |      |
+| 1,r |   |   |     | 5 |     | 7 |   | 9 |      | 11 |      |    | 14 |      | 16 |      |
+|     |   |   | 4,r |   |     |   |   |   |      |    | 12,r |    |    |      |    | 17,r |
 
 *** Question 1.2.3
 
@@ -838,7 +842,54 @@ On a déjà répondu à la question.
 
 *** Question 1.5.3
 
-[On a besoin de la question 1.2.2]
+|     |   |   |     |   |     |   | 8 |   |      |    |      |    |    |      |    |      |
+|     |   | 3 |     |   |     |   |   |   |      |    |      | 13 |    |      |    |      |
+|     | 2 |   |     |   | 6,r |   |   |   | 10,r |    |      |    |    | 15,r |    |      |
+| 1,r |   |   |     | 5 |     | 7 |   | 9 |      | 11 |      |    | 14 |      | 16 |      |
+|     |   |   | 4,r |   |     |   |   |   |      |    | 12,r |    |    |      |    | 17,r |
+-> Eclatement, on rencontre un père à deux fils rouges pendant la descente.
+
+|     |   |   |     |   |     |   | 8 |   |    |    |      |      |   |    |    |    |      |
+|     |   | 3 |     |   |     |   |   |   |    |    |      | 13,r |   |    |    |    |      |
+|     | 2 |   |     |   | 6,r |   |   |   | 10 |    |      |      |   |    | 15 |    |      |
+| 1,r |   |   |     | 5 |     | 7 |   | 9 |    | 11 |      |      |   | 14 |    | 16 |      |
+|     |   |   | 4,r |   |     |   |   |   |    |    | 12,r |      |   |    |    |    | 17,r |
+-> On reprend la recherche à 13
+
+|     |   |   |     |   |     |   | 8 |   |    |    |      |      |        |    |    |    |      |
+|     |   | 3 |     |   |     |   |   |   |    |    |      | 13,r |        |    |    |    |      |
+|     | 2 |   |     |   | 6,r |   |   |   | 10 |    |      |      |        |    | 15 |    |      |
+| 1,r |   |   |     | 5 |     | 7 |   | 9 |    | 11 |      |      |        | 14 |    | 16 |      |
+|     |   |   | 4,r |   |     |   |   |   |    |    | 12,r |      | 13.1,r |    |    |    | 17,r |
+
+|     |   |   |     |   |     |   | 8 |   |    |    |      |      |        |      |    |    |    |      |
+|     |   | 3 |     |   |     |   |   |   |    |    |      | 13,r |        |      |    |    |    |      |
+|     | 2 |   |     |   | 6,r |   |   |   | 10 |    |      |      |        |      |    | 15 |    |      |
+| 1,r |   |   |     | 5 |     | 7 |   | 9 |    | 11 |      |      |        | 13.3 |    |    | 16 |      |
+|     |   |   | 4,r |   |     |   |   |   |    |    | 12,r |      | 13.1,r |      | 14 |    |    | 17,r |
+
+|     |   |   |     |   |     |   | 8 |   |    |      |    |        |      |        |      |    |    |    |      |
+|     |   | 3 |     |   |     |   |   |   |    |      |    |        | 13,r |        |      |    |    |    |      |
+|     | 2 |   |     |   | 6,r |   |   |   | 10 |      |    |        |      |        |      |    | 15 |    |      |
+| 1,r |   |   |     | 5 |     | 7 |   | 9 |    |      | 12 |        |      |        | 13.3 |    |    | 16 |      |
+|     |   |   | 4,r |   |     |   |   |   |    | 11,r |    | 12.5,r |      | 13.1,r |      | 14 |    |    | 17,r |
+-> Eclatement, on rencontre un père avec deux fils rouges pendant la descente.
+
+|     |   |   |     |   |     |   | 8 |   |    |    |      |        |      |        |      |    |    |    |      |
+|     |   | 3 |     |   |     |   |   |   |    |    |      |        | 13,r |        |      |    |    |    |      |
+|     | 2 |   |     |   | 6,r |   |   |   | 10 |    |      |        |      |        |      |    | 15 |    |      |
+| 1,r |   |   |     | 5 |     | 7 |   | 9 |    |    | 12,r |        |      |        | 13.3 |    |    | 16 |      |
+|     |   |   | 4,r |   |     |   |   |   |    | 11 |      | 12.5   |      | 13.1,r |      | 14 |    |    | 17,r |
+-> On reprend la recherche à 12
+
+|     |   |   |     |   |     |   | 8 |   |    |    |      |      |        |      |        |      |    |    |    |      |
+|     |   | 3 |     |   |     |   |   |   |    |    |      |      |        | 13,r |        |      |    |    |    |      |
+|     | 2 |   |     |   | 6,r |   |   |   | 10 |    |      |      |        |      |        |      |    | 15 |    |      |
+| 1,r |   |   |     | 5 |     | 7 |   | 9 |    |    | 12,r |      |        |      |        | 13.3 |    |    | 16 |      |
+|     |   |   | 4,r |   |     |   |   |   |    | 11 |      | 12.5 |        |      | 13.1,r |      | 14 |    |    | 17,r |
+|     |   |   |     |   |     |   |   |   |    |    |      |      | 12.8,r |      |        |      |    |    |    |      |
+-> Fini, on a bien un arbre rouge-noir
+
 
 *** Question 1.5.4
 
@@ -847,15 +898,15 @@ Déjà écrit.
 #+BEGIN_SRC c
   insertion(A, cle)
   {
-	  if (!Sous-arbres-vides(A)) {
-		  if (Sous-noeud-gauche-rouge(A) && Sous-noeud-droit-rouge(A)) {
+	  if (!un_des_sous_arbres_est_vide(A)) {
+		  if (Sous_noeud_gauche_rouge(A) && Sous_noeud_droit_rouge(A)) {
 			  eclatement(A);
 		  }
 
 		  if (cle < clef(A)) {
-			  insertion(sous-noeud-gauche, cle);
+			  insertion(sous_noeud_gauche(A), cle);
 		  } else {
-			  insertion(sous-noeud-droit, cle);
+			  insertion(sous_noeud_droit(A), cle);
 		  }
 	  }
 
@@ -867,41 +918,46 @@ Déjà écrit.
 Très très moche. On part du principe que toutes les sous-fonctions sont bien écrites.
 Et récursif en plus.
 
-[Refaire un vrai code à la maison, en C]
-
 *** Question 1.5.5
 
 Analysons l'algorithme du Cormen :
 
-Ecrivons-le en C.
+Pour insérer une nouvelle valeur v dans un arbre binaire de recherche, on utilise la routine arbre-inserer de l'énoncé.
 
-#+BEGIN_SRC c
-  arbre_inserer(T, z)
-  {
-	  int y = 0;
-	  int x = racine(T);
+Cette routine prend l'arbre T dans lequel on veut insérer la valeur, et un noeud z dont la clé est v, et dont les pointeurs respectifs vers l'élément droite et l'élément gauche sont à NULL. Le but est de modifier T et certains des attributs de z de manière à insérer z à sa position appropriée.
 
-	  while (!empty(x)) {
-		  y = x;
-		  if (cle(z) < cle(x)) {
-			  x = gauche(x);
-		  } else {
-			  x = droite(x);
-		  }
-	  }
+L'algorithme commence à la racine de l'arbre. Le pointeur x trace un simple chemin binaire vers le bas. Le pointeur y garde le parent de x (très important).
 
-	  pere(z) = y;
+La boucle while fait descendre x et y vers le bas et s'arrête quand x est le pointeur NULL.
 
-	  if (empty(y)) {
-		  racine(T) = z;
-	  } else if (cle(z) < cle(y)) {
-		  gauche(y) = z;
-		  droite(x) = z;
-	  }
+Quand x est le pointeur NULL, on vérifie que y ne l'est pas non plus. S'il l'est, alors c'est que l'arbre T était vide, et on peut se contenter de mettre le noeud z à la racine de T.
 
-	  return;
-  }
-#+END_SRC
+Si x est le pointeur NULL et que donc y est le pointeur vers son père, on sait par les propriétés de l'arbre binaire de recherche que y.left = NULL et y.right = NULL (les deux fils sont vides).
+
+On compare donc v à la clé de y : si cette clé est inférieure, on met le noeud z à gauche, sinon à droite.
+
+
+La routine left-rotate prend en paramètre l'arbre sur lequel appliquer la rotation (T), ainsi que le noeud à demote par rotation gauche (x). On disposerait apparemment d'un pointeur vers le parent p.
+
+On enregistre dans y le pointeur vers le fils droit de x. On met le sous-arbre gauche de y (\beta) comme sous-arbre droit de x.
+
+Si le sous arbre gauche de y n'est pas l'arbre nul, on fait pointer le pointeur de père de ce sous-arbre vers x.
+
+On attribue au pointeur vers le parent de y le parent de x.
+
+Si le parent de x (et donc maintenant, le parent de y aussi) est nul, alors la racine de l'arbre est y.
+
+sinon, et si le sous-arbre-gauche du père de x est x (si x est à gauche de son père), on dit que ce sous-arbre-gauche du père de x est maintenant y.
+
+Sinon (càd si le sous-arbre-droit du père de x est x, on plus simplement si x est à droite de son père), on met y comme sous-arbre-droit du père de x.
+
+On met x à la gauche de y, et y devient le père de x.
+
+Tout cet algorithme suppose quand même que chaque noeud a un pointeur vers son père, ce qui est coûteux.
+
+#+CAPTION: (Cormen, Introduction to Algorithmics, p.313)
+[[./TD2/rotation.jpg][Rotations]]
+
 
 * TD 4 : 17/10/2019
 
@@ -911,13 +967,24 @@ Ecrivons-le en C.
 
 Arbre binaire de recherche :
 
-[Fait à la feuille]
+| A |   |   |   |   |   |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |   |   | S |   |
+|   |   | E |   |   |   |   |   |   |   |   |   |   | X |
+|   | C |   |   |   |   |   |   |   |   | R |   |   |   |
+|   |   |   |   | H |   |   |   |   |   |   |   |   |   |
+|   |   |   | G |   | I |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   | N |   |   |   |   |   |
+|   |   |   |   |   |   |   | M |   | P |   |   |   |   |
+|   |   |   |   |   |   | L |   |   |   |   |   |   |   |
 
 *** Question 2.1.2
 
-Pareil
-
-[Fait à la feuille]
+|   |   |   |   |   |   | L |   |   |   |   |   |   |
+| A |   |   |   |   |   |   |   |   |   |   | S |   |
+|   |   | E |   |   |   |   |   |   |   | R |   | X |
+|   | C |   |   | H |   |   |   | N |   |   |   |   |
+|   |   |   | G |   | I |   | M |   | P |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |   |   |   |
 
 *** Question 2.1.3
 
@@ -927,33 +994,50 @@ La structure de l'arbre binaire de recherche dépend de la structure.
 
 *** Question 2.1.4
 
-[Fait au tableau]
+[non prioritaire, à refaire en révisions pour s'entraîner]
 
 *** Question 2.2.1
 
-[Fait au papier]
+[non prioritaire, à refaire en révisions pour s'entraîner]
 
 *** Question 2.2.2
 
 [Fait au tableau]
-
-*** Exo perso Maximilien
-
-[à refaire]
+[non prioritaire, à refaire en révisions pour s'entraîner]
 
 *** Question 2.2.3
 
-Arbre de la Briandais.
+Arbre de la Briandais :
 
-Assez brillant.
+Inventé par René de la Briandais (le pionnier des structures de type tries) dans un article de 1959.
 
-[On s'entraînera à réexpliquer le principe]
+Chaque noeud est une structure qui contient un caractère et deux pointeurs. Le premier pointeur pointe vers un fils éventuel, le deuxième pointeur pointe vers un frère éventuel.
 
-[Fait au tableau, compliqué à dessiner]
+Le tableau de taille R qui constitue un noeud dans le R-trie est remplacé par une liste chaînée triée (chaînée via le deuxième pointeur) des éléments de ce tableau.
+
+Le premier pointeur est le pointeur vers la liste chaînée triée du prochain caractère.
+
+On doit créer un caractère supplémentaire (genre '\0') qui indique qu'on est à la fin d'un mot. Par convention, ce caractère est trié avant tous les autres.
+
+Cette structure de données est avantageuse si on a un grand alphabet : la taille du stockage d'un mot ne dépend pas de la taille de l'alphabet, mais uniquement de la taille du mot.
+
+Là où les Patricia-tries sont très mauvais, par exemple pour stocker des mots très longs qui n'ont pas ou peu de préfixes communs, l'arbre de la briandais ne paie que deux pointeurs par caractère.
+
+
+| A,.,.  |        | C,.,.  | T,.,0  |        |
+| A,.,.  | T,.,0  | G,.,0  | A,.,0  |        |
+| T,.,0  | \0,0,0 | G,.,0  | C,.,0  |        |
+| \0,0,0 |        | A,.,0  | \0,0,. | G,.,0  |
+|        |        | \0,0,0 |        | \0,0,0 |
 
 *** Question 2.2.4
 
-On aurait besoin de tete(n), de queue(n), et de BRD(car, )
+Cette question dépend un peu trop de l'implémentation choisie.
+Pour notre implémentation des deux questions suivantes, on a défini les primitives suivantes :
+- tete, qui rend le premier caractère d'une chaine.
+- queue, qui rend la chaine privée de tete.
+- place_fratrie_ou_cree, qui rend un pointeur vers un noeud correspondant à la bonne place dans la liste chainée des frères, créé et rend s'il ne trouve pas.
+- place_fratrie_ou_echec, qui rend un pointeur vers un noeud correspondant à la bonne place dans la liste chaînée des frères, rend un pointeur nul s'il ne trouve pas.
 
 *** Question 2.2.5
 
@@ -974,30 +1058,7 @@ On aurait besoin de tete(n), de queue(n), et de BRD(car, )
 	  return chaine + 1;
   }
 
-  struct noeud *insertion_nul(struct noeud *racine, char *chaine)
-  {
-	  struct noeud *cur = racine;
-	  cur = malloc(sizeof(struct noeud));
-
-	  while (*chaine != '\0') {
-		  cur->lettre = tete(chaine);
-
-		  cur->fils = malloc(sizeof(struct noeud));
-		  cur->fils->fils = NULL;
-		  cur->fils->frere = NULL;
-		  cur->fils->lettre = '\0';
-
-		  cur->frere = NULL;
-		  chaine = queue(chaine);
-
-		  cur = cur->fils;
-	  }
-
-	  return racine;
-
-  }
-
-  struct noeud *place_fratrie(struct noeud *grand_frere, char caractere)
+  struct noeud *place_fratrie_ou_cree(struct noeud *grand_frere, char caractere)
   {
 	  struct noeud *cur = grand_frere;
 	  for (; cur != NULL; cur = cur->frere) {
@@ -1029,19 +1090,28 @@ On aurait besoin de tete(n), de queue(n), et de BRD(car, )
 	  cur->fils->frere = NULL;
 
 	  return cur;
+	  }
+
+  struct noeud *place_fratrie_ou_echec(struct noeud *grand_frere, char caractere)
+  {
+	  struct noeud *cur = grand_frere;
+
+	  for (; cur != NULL; cur = cur->frere) {
+		  if (caractere == cur->lettre) return cur;
+		  if (caractere > cur->frere->lettre) return NULL;
+	  }
+
+	  return NULL;
   }
 
   struct noeud *insertion(struct noeud *racine, char *chaine)
   {
-	  /* Probablement pas nécessaire */
-	  /* if (racine == NULL) return insertion_nul(racine, chaine); */
-
 	  struct noeud *cur = racine;
 
 	  while (*chaine != '\0') {
-		  cur = place_fratrie(cur, *chaine);
+		  cur = place_fratrie_ou_cree(cur, *chaine);
 		  cur = cur->fils;
-		  ++chaine;
+		  chaine = queue(chaine);
 	  }
 
 	  return racine;
@@ -1052,10 +1122,37 @@ On aurait besoin de tete(n), de queue(n), et de BRD(car, )
   }
 #+END_SRC
 
+L'implantation de la suppression est un peu complexe, surtout si on se refuse à implémenter une fonction de suppression récursive.
+La difficulté vient de l'absence de pointeur montant. On voudrait aussi essayer de ne descendre qu'une fois la table.
+
+On a une idée assez élégante, mais un peu longue à implémenter : au fur et à mesure qu'on descent, on rajoute un pointeur vers le noeud qu'on vient de quitter en tête d'une liste chaînée de pointeurs qu'on aura pris la peine de créer. Si à un moment, on s'aperçoit qu'on n'a pas le mot, on peut d'arrêter, dépop tous les éléments de la liste chaînée et rendre un pointeur nul. Si on trouve le mot, on nettoie l'arbre en remontant dans la liste chaînée (et en dépopant la liste chainée au passage).
+
+La liste chaînée de pointeurs est excellente, parce qu'on met les pointeurs dans la liste dans le sens inverse exact dans lequel on va les en enlever (LIFO). Les opérations d'ajout et de suppression dans cette liste chaînée seront en O(1), on n'a pas besoin de faire quelque hypothèse que ce soit sur la hauteur de l'arbre de la Briandais.
+
+La complexité au pire cas de la suppression est donc de O(h) dans notre implémentation, avec h la hauteur de l'arbre.
+
+On implémentera ça si on a le temps et l'envie.
+
 *** Question 2.3.1
 
-[Fait sur papier]
-[A refaire si on trouve un formalisme]
+| 0,0,0,0,TACG\0 |
+
+| 0,AAT\0,0,0,TACG\0 |
+
+|                | 0,A,0,0,TACG\0 |
+| 0,AT\0,0,0,T\0 |                |
+
+|                | 0,A,CGGA\0,0,TACG\0 |
+| 0,AT\0,0,0,T\0 |                     |
+
+|                | 0,A,CGGA\0,0,TAC |              |
+| 0,AT\0,0,0,T\0 |                  | \0,0,0,G\0,0 |
+
+Les chaines très longues et avec peu de radicaux communs sont très mauvaises en Patricia tries.
+Le patricia trie est aussi de plus en plus mauvais en la taille de l'alphabet (augmente le nombre d'éléments du tableau qui représente chaque noeud).
+Il faut soit faire des hypothèses sur la taille maximale des chaines de caractères à inclure, soit mettre dans les tableaux des pointeurs vers des chaînes de caractères allouées dynamiquement (mauvais pour le cache).
+
+Néanmoins, permet un random access à tous les éléments d'un noeud, indépendemment de leur place dans l'alphabet, contrairement au Briandais, qui traite les mots de pire en pire selon qu'ils ont beaucoup de lettres de fin d'alphabet.
 
 *** Question 2.3.2
 
@@ -1067,13 +1164,51 @@ On va écrire une primitive qui donne le plus grand radical commun de deux chain
 
 Un patricia trie est un tableau de chaines de caractères, dont le nombre d'éléments est donné par le nombre de lettres de notre alphabet.
 
-#+BEGIN_SRC c
+En fait, un patricia trie est un R-trie : il doit donc disposer, en plus de son tableau, de R pointeurs vers chacun des R sous-noeuds
 
-#+END_SRC
+On se restreint au cas considéré, un alphabet de 4 caractères.
 
-Chaines très longues et avec peu de radicaux communs sont très mauvaises en Patricia tries.
+L'idée est la suivante :
 
-[On va faire le code C de l'insertion]
+Je suis à la racine, je compare la chaine à celle du tableau de la racine (avec la primitive décrit plus haut).
+
+Si la racine est vide ou que la chaine de caractère du tableau est vide, je créé le noeud et je mets la chaine à sa place, ou je mets seulement la chaine à sa place.
+
+Si le prefixe est non réduit à l'élément nul (il est au moins réduit à la première lettre par construction), et ne correspond pas à la chaine dans le tableau, il faut réduire la chaine dans le tableau au préfixe commun, et renvoyer le reste plus bas (revient à insérer dans l'arbre le reste en question, peut-être fait en utilisant la fonction courante en passant le sous-noeud et le reste en paramètre, mais ouvre une sous-chaine de récursivité).
+
+Si le préfixe est non réduit à l'élément nul (il est au moins réduit à la première lettre par construction), et correspond bien à la chaine dans le tableau, je recommence la procédure au sous-noeud correspondant, avec en input la chaine privée de son premier élément.
+
+Si le préfixe est non réduit à l'élément nul et qu'il est égal à la chaine que je veux insérer (caractère de terminaison compris, bien entendu), alors l'élément est déjà dans la structure et je m'arrête.
+
+*** Question 2.3.4
+
+La suppression est plus simple :
+
+On cherche le préfixe maximal entre la chaine avec son caractère de terminaison d'une part et la chaine à la bonne place d'autre part.
+
+Si le préfixe maximal est la chaine réduite à l'élément nul, c'est que la chaine qu'on cherche n'est pas dans la structure, on s'arrête donc.
+
+Si le préfixe maximal est la chaîne qu'on cherche avec son caractère de fin, on supprime le champ. Si le noeud devient vide par-là, on le free.
+
+Dans tous les autres cas, on reprend la recherche au sous-noeud idoine, avec en input la chaine de caractère privée de son préfixe commun avec le champ idoine du noeud qu'on vient de quitter.
+
+(Dans cette vision, le caractère de terminaison fait partie intégrante de la chaine)
+
+On a forcément une condition d'arrêt parmi les deux définies plus haut : algorithme fini et valable.
+
+*** Question 2.3.5
+
+Pas facile.
+
+On peut vider un Patricia trie dans l'autre, en vidant les noeuds de manière systématique, en commençant par ceux du bas à gauche, par exemple.
+
+On remonte au fur et à mesure qu'on depop les noeuds après avoir mis leur contenu dans l'autre.
+
+Un peu violent et coûteux, mais fonctionne.
+
+Si on connaît les tailles des deux patricia tries, on s'arrange pour vider le plus petit dans le plus grand (merci captain obvious).
+
+Si n la taille du plus petit des deux patricia tries, alors la fusion coute n recherches plus n insertions.
 
 * Annexes
 
