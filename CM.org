@@ -1385,15 +1385,26 @@ Binh-Minh Bui Xuan, 2019
 
 * Cours 5 : 22/10/2019
 
-Enveloppe convexe
+** Enveloppe convexe
 
-Les cercles crééent plein de faux positifs. On va essayer un meilleur conteneur, l'enveloppe convexe.
+La semaine dernière, on avait vu les cercles pour les tests de collision : en assimilant les objets à un cercle, on peut très facilement décider sans faux négatif si deux objets se touchent.
 
-L'enveloppe convexe est convexe : toute corde est à l'intérieur de l'objet, ou alors, tous les points d'un segment formé par deux points dans l'espace convexe sont dans l'espace.
+Mais sur les objets un peu complexes, les cercles crééent plein de faux positifs.
 
-Permet de diminuer le taux de faux positifs, et on n'a pas de faux négatifs. Quand on dit que deux objets ne se touchent pas leurs enveloppes convexes à peu près, c'est toujours vrai.
+Pour cette raison, on va essayer cette semaine un meilleur conteneur, l'enveloppe convexe.
 
-Sens trigonométrique est le sens horaire pour les informaticiens. (y va vers le bas).
+#+BEGIN_THEOREM
+L'enveloppe convexe est convexe : toute corde de l'enveloppe est comprise dans l'objet.
+
+Les faux négatifs sont impossibles : Quand on dit que deux objets ne se touchent pas leurs enveloppes convexes à peu près, on sait qu'ils ne se touchent pas en vrai.
+
+Les faux positifs sont aussi strictement moins fréquent qu'avec une enveloppe circulaire.
+#+END_THEOREM
+
+#+BEGIN_DEFINITION
+On rappelle que le *sens trigonométrique* est le sens horaire pour les informaticiens : l'axe des ordonnées est dirigé vers le bas.
+#+END_DEFINITION
+
 
 *** Petit exercice
 
@@ -1407,18 +1418,31 @@ Si on a n points dans la liste, on a n côtés aussi.
 
 Pour chacun des n côtés défini par le vecteur, on calcule le signe.
 
+On part du principe qu'on a une primitive bien utile qui permet de dire si a d'une part, et s d'autre part, sont dans le même demi-plan donné par la droite bc (en pratique, cette primitive se sert des produits vectoriels et du signe de la coordonnée z du résultat) :
+
+#+BEGIN_SRC java
+  boolean memeCote(Point a, Point b, Point c, Point s);
+#+END_SRC
+
+On se propose de simplement itérer sur les points de p1 et p2 :
+Prendre trois points de p1 (avec un itérateur bien pratique) (en faisant bien attention à ne pas passer past the end), et vérifier pour chaque point de p2 s'ils sont du même côté. S'ils ne le sont pas, on peut break, le côté considéré n'est pas un côté séparant.
+
+Dès qu'on trouve un côté séparant, on peut s'arrêter, on a gagné.
+
+On doit tester les côtés séparants sur les deux objets : un des deux peut très bien ne pas avoir de côté séparant, mais l'autre oui.
+
 Petite implantation en java :
 
 #+BEGIN_SRC java
   public boolean collision(ArrayList <Point> p1, ArrayList <Point> p2) {
-	  for (int i = 0; i < p&.size(); i++) {
+	  for (int i = 0; i < p1.size(); i++) {
 		  boolean coteTrouve = true;
 		  Point a = p1.get(i);
 		  Point b = p1.get((i+1) % p1.size());
-		  Point c = p&.get((i+2) % p1.size());
+		  Point c = p1.get((i+2) % p1.size());
 
 		  for (Point s:p2) {
-			  if (memecote(a,b,c,s)) {
+			  if (memeCote(a,b,c,s)) {
 				  coteTrouve = false;
 				  break;
 			  }
@@ -1432,7 +1456,7 @@ Petite implantation en java :
 #+END_SRC
 
 Complexité au pire cas : p1.size() * p2.size().
-En vrai, c'est beaucoup plus rapide : on fait plein de break et de return prematurés
+En vrai, c'est beaucoup plus rapide : on fait plein de break et de return prematurés : à moins d'avoir vraiment très peu de chance, où c'est systématiquement le dernier point qu'on teste qui "casse" le côté.
 
 **** Aparté : 
 
@@ -1444,7 +1468,6 @@ On utilise le produit vectoriel : si la coordonnée z est positive, on est d'un 
 On a un objet géométrique complexe défini par la liste de ses points.
 
 On veut une sous-liste de cette liste qui représente le contour positif (liste dans le sens trigo) de l'enveloppe convexe.
-
 
 La solution naïve, en java :
 
@@ -1472,7 +1495,6 @@ La solution naïve, en java :
 				  enveloppe.add(q);
 			  }
 		  }
-
 	  }
 
 	  return enveloppe;
@@ -1490,7 +1512,7 @@ On peut éliminer des points : Si n>3 points ont la même équation de droite, a
 
 Implantation :
 
-On créé deux séries de N buckets (N étant la largeur en pixels de votre écran).
+On créé deux séries de N buckets (N étant la largeur en pixels de l'écran).
 
 On boucle sur les points : si le point est plus haut que le point de son bucket du haut (en terme d'ordonnées), on remplace ce dernier. Si le point est plus bas que son bucket du bas (en terme d'ordonnées), on remplace ce dernier.
 
@@ -1500,28 +1522,29 @@ Complexité en n
 
 **** Filtrage Akl-Toussaint + Quickhull
 
-On saut que les 4 points extrêmaux (Nord, Sud, Est, Ouest) sont dans l'enveloppe convexe. Et on sait en plus que tous les points dans le quadrilatère ne peuvent pas être dans l'enveloppe convexe.
+On sait que les 4 points extrêmaux (Nord, Sud, Est, Ouest) sont dans l'enveloppe convexe. Et on sait en plus que tous les points dans le quadrilatère ne peuvent pas être dans l'enveloppe convexe.
 
-(Quickhull)
+Puis on applique l'algorithme du quickhull :
 
 Une fois qu'on a le quadrilatère, on checke s'il reste encore des points de l'autre côté. S'il en reste, on prend le plus loin (produit scalaire), et on fait deux côtés là où il y en avait un seul : on enlève les points du triangle qu'on vient de créer, et on revérifie sur les deux côtés.
 
 Complexité au pire cas n^2. \Theta(n^2)
 
-**** Algo Jarvis
+**** Algorithme Jarvis
 
 Si on a deux points qui forment un côté, on calcule les angles, et on prend le point qui a l'angle minimal.
 
 Complexité au pire cas en n * h, avec h le nombre de côtés.
 
-\Theta(nh)
+Cet algorithme est en \Theta(nh)
 
 **** Algorithme Chan
 
-On coupe la liste en morceaux, puis appels récursifs sur les .
+On coupe la liste en morceaux. On calcule l'enveloppe convexe des morceaux avec un algo en n * log(n), comme Graham : cette partie prend O(n log(m)), avec m le nombre maximum de points dans un sous-groupe.
 
-Jarvis sur les contours positifs des morceaux.
+Ensuite, on applique Jarvis en ne prenant comme candidats que les éléments des enveloppes convexes des sous ensembles : cette partie prend O(n * log(h)) si h est proche de m.
 
+Donc en tout O(n * log(h)), avec h le nombre de côtés.
 
 * Annexes
 
