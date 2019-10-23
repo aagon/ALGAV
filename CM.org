@@ -1383,6 +1383,146 @@ Binh-Minh Bui Xuan, 2019
 #+END_DEFINITION
 
 
+* Cours 5 : 22/10/2019
+
+Enveloppe convexe
+
+Les cercles crééent plein de faux positifs. On va essayer un meilleur conteneur, l'enveloppe convexe.
+
+L'enveloppe convexe est convexe : toute corde est à l'intérieur de l'objet, ou alors, tous les points d'un segment formé par deux points dans l'espace convexe sont dans l'espace.
+
+Permet de diminuer le taux de faux positifs, et on n'a pas de faux négatifs. Quand on dit que deux objets ne se touchent pas leurs enveloppes convexes à peu près, c'est toujours vrai.
+
+Sens trigonométrique est le sens horaire pour les informaticiens. (y va vers le bas).
+
+*** Petit exercice
+
+Tous les côtés peuvent être définis par les couples successifs des contours positifs de l'objet.
+
+Le contour positif est une liste des coins ordonnée.
+
+Tous les couples successifs définissent des côtés.
+
+Si on a n points dans la liste, on a n côtés aussi.
+
+Pour chacun des n côtés défini par le vecteur, on calcule le signe.
+
+Petite implantation en java :
+
+#+BEGIN_SRC java
+  public boolean collision(ArrayList <Point> p1, ArrayList <Point> p2) {
+	  for (int i = 0; i < p&.size(); i++) {
+		  boolean coteTrouve = true;
+		  Point a = p1.get(i);
+		  Point b = p1.get((i+1) % p1.size());
+		  Point c = p&.get((i+2) % p1.size());
+
+		  for (Point s:p2) {
+			  if (memecote(a,b,c,s)) {
+				  coteTrouve = false;
+				  break;
+			  }
+
+			  if (coteTrouve == true) return false;
+		  }
+
+		  // Refaire la même chose en remplaçant p1 et p2
+	  }
+  }
+#+END_SRC
+
+Complexité au pire cas : p1.size() * p2.size().
+En vrai, c'est beaucoup plus rapide : on fait plein de break et de return prematurés
+
+**** Aparté : 
+
+Test de ce que qqch est à droite ou à gauche d'une droite :
+On utilise le produit vectoriel : si la coordonnée z est positive, on est d'un côté, négative on est de l'autre. C'est comme ça que la fonction même côté est implémentée.
+
+*** Problème de l'enveloppe convexe
+
+On a un objet géométrique complexe défini par la liste de ses points.
+
+On veut une sous-liste de cette liste qui représente le contour positif (liste dans le sens trigo) de l'enveloppe convexe.
+
+
+La solution naïve, en java :
+
+#+BEGIN_SRC java
+  ArrayList <Point> getEnveloppe(ArrayList <Point> points) {
+	  ArrayList<Point> enveloppe = new ArrayList<Point> ();
+
+	  for (Point p : points) {
+		  for (Point q : points) {
+			  boolean estCote = true;
+			  int i = 0;
+
+			  while (crossProduct(p,q,points.get(i)) == 0) i++;
+			  double signeRef = crossProduct(p,q,points.get(i));
+
+			  for (Point r : points) {
+				  if (crossProduct(p,q,r) * signeRef < 0) {
+					  estCote = false;
+					  break;
+				  }
+			  }
+
+			  if (estCote) {
+				  enveloppe.add(p);
+				  enveloppe.add(q);
+			  }
+		  }
+
+	  }
+
+	  return enveloppe;
+  }
+#+END_SRC
+
+Complexité au pire cas est en n^3 (on se rend compte au dernier point que le segment qu'on regarde n'était en fait pas un côté)
+En vrai, on est sur du n^2 : on voit très vite si on n'est pas un côté, et on break.
+
+*** Meilleures solutions
+
+**** Elimination par pixel + Graham
+
+On peut éliminer des points : Si n>3 points ont la même équation de droite, alors au plus deux de ces points appartiennent à l'enveloppe convexe (les deux points avec respectivement la plus petite et la plus grande coordonnée selon la droite.)
+
+Implantation :
+
+On créé deux séries de N buckets (N étant la largeur en pixels de votre écran).
+
+On boucle sur les points : si le point est plus haut que le point de son bucket du haut (en terme d'ordonnées), on remplace ce dernier. Si le point est plus bas que son bucket du bas (en terme d'ordonnées), on remplace ce dernier.
+
+On n'a plus qu'à itérer sur les 2N points, on sait que les côtés se forment nécessairement avec un sous-ensemble de ces 2N points.
+
+Complexité en n
+
+**** Filtrage Akl-Toussaint + Quickhull
+
+On saut que les 4 points extrêmaux (Nord, Sud, Est, Ouest) sont dans l'enveloppe convexe. Et on sait en plus que tous les points dans le quadrilatère ne peuvent pas être dans l'enveloppe convexe.
+
+(Quickhull)
+
+Une fois qu'on a le quadrilatère, on checke s'il reste encore des points de l'autre côté. S'il en reste, on prend le plus loin (produit scalaire), et on fait deux côtés là où il y en avait un seul : on enlève les points du triangle qu'on vient de créer, et on revérifie sur les deux côtés.
+
+Complexité au pire cas n^2. \Theta(n^2)
+
+**** Algo Jarvis
+
+Si on a deux points qui forment un côté, on calcule les angles, et on prend le point qui a l'angle minimal.
+
+Complexité au pire cas en n * h, avec h le nombre de côtés.
+
+\Theta(nh)
+
+**** Algorithme Chan
+
+On coupe la liste en morceaux, puis appels récursifs sur les .
+
+Jarvis sur les contours positifs des morceaux.
+
+
 * Annexes
 
 Support des cours :
@@ -1393,5 +1533,6 @@ Support des cours :
 Support des cours BMBX :
 
 [[./CM3/coursBMBX1.pdf][Cours 1]]
+[[./CM4/coursBMBX2.pdf][Cours 2]]
 
 
