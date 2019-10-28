@@ -1,0 +1,44 @@
+<project name="TME1_cpa" default="compile" basedir=".">
+    <description>
+        The build file ove-ze-death-dzat-kills
+    </description>
+  <property name="src" location="src"/>
+  <property name="build" location="beans"/>
+
+    <target name="init">
+    <tstamp/>
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="compile" depends="init"
+        description="compile the source " >
+    <javac debug="true" srcdir="${src}" excludes="" destdir="${build}"
+    	   classpath="${build}/:jars/supportGUI.jar"/>
+  </target>
+
+  <target name="run" depends="compile"
+          description="run examples">
+    <echo>================ Run Object Main ================</echo>
+    <java classname="supportGUI.DiamRace"
+          classpath="${build}/:jars/supportGUI.jar" fork="true">
+    </java>
+  </target>
+
+  <target name="dist" depends="init,clean"
+        description="Generer la distribution" >
+    <!-- tout mettre dans l'archive -->
+    <jar basedir="." jarfile="../TME1_cpa${DSTAMP}.jar"/>
+  </target>
+
+  <target name="clean"
+        description="clean up" >	
+	<echo>================ Removing temporary files... ================</echo>
+        <delete verbose="true"> <!-- Remove all *~ files -->
+	   <fileset dir="${basedir}" defaultexcludes="no">
+             <include name="**/*~"/>
+           </fileset>
+        </delete>
+        <echo>================ Removing build directory ================</echo>    
+	<delete dir="${build}"/>
+  </target>
+</project>

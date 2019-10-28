@@ -1358,6 +1358,23 @@ La complexité en calcul de l'ALU d'une distance est de 3 calculs (2 carrés et 
 
 Donc la complexité au pire cas : 7n^2 + log(n^2) + O(cn), soit O(n^2)
 
+Cette solution ne fonctionne pas : le théorème selon lequel la distance maximale entre deux points est toujours le diamètre du  
+
+La bonne solution naïve :
+
+- On prend les (n^2 - n)/2 couples de points, on fait le cercle de diamètre. (n^2)
+- On vérifie si tous les points sont dans ce cercle (*n). Si j'ai un cercle qui respecte cette propriété, je le garde. Je mets à jour si j'en trouve un plus petit. Si j'ai un cercle à la fin de cette itération, c'est le cercle minimum, on peut d'arrêter.
+
+Si je suis dans ce cas-là, alors l'algorithme est en O(n^3)
+
+Sinon, je dois recommencer :
+- On prend n parmi 3 triplets de points (un truc en n^3), pour chaque triplet, on calcule l'unique cercle qui passe par ces trois points.
+- Je vérifie que tous les points sont dans ce cercle (*n). Si j'ai un cercle qui respecte cette propriété, je le garde. Je mets à jour si j'en trouve un plus petit. Je sais que j'ai un cercle à la fin de cette itération, si je n'en ai pas trouvé avant (résultat mathématique qu'on ne redémontrera pas ici).
+
+Dans ce deuxième cas, l'algorithme est en O(n^4)
+
+Vu que je fais les deux cas de manière séquentielle, la complexité au pire case est donnée par O(n^3 + n^4), soit O(n^4).
+
 La vraie bonne solution, en O(n) au pire cas, c'est l'algorithme incrémental :
 
 - On trace le cercle de diamètre des deux premiers éléments de la liste : négligeable
@@ -1545,6 +1562,7 @@ On coupe la liste en morceaux. On calcule l'enveloppe convexe des morceaux avec 
 Ensuite, on applique Jarvis en ne prenant comme candidats que les éléments des enveloppes convexes des sous ensembles : cette partie prend O(n * log(h)) si h est proche de m.
 
 Donc en tout O(n * log(h)), avec h le nombre de côtés.
+
 
 * Annexes
 

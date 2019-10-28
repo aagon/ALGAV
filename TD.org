@@ -1,4 +1,4 @@
-#+TITLE : Prise de notes CM 4I500 ALGAV
+#+TITLE : Prise de notes TD 4I500 ALGAV
 #+PROPERTY: header-args :mkdirp yes
 #+STARTUP: inlineimages
 
@@ -1209,6 +1209,7 @@ Un peu violent et coûteux, mais fonctionne.
 Si on connaît les tailles des deux patricia tries, on s'arrange pour vider le plus petit dans le plus grand (merci captain obvious).
 
 Si n la taille du plus petit des deux patricia tries, alors la fusion coute n recherches plus n insertions.
+
 
 * Annexes
 

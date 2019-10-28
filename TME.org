@@ -1,0 +1,91 @@
+#+TITLE : Prise de notes TME 4I500 ALGAV
+#+PROPERTY: header-args :mkdirp yes
+#+STARTUP: inlineimages
+
+Binh Minh Bui Xuan
+Maximilien Danisch
+
+* TME 1 : 24/10/2019
+
+Ce TME demande de savoir coder en Java, et d'être capable de compiler (? est-ce que ce terme veut dire qqch dans Javaland ?).
+
+On n'a pas été capable de faire le Java, on reprendra ça après les partiels.
+
+** Exercice 1
+
+*** Question 1
+
+Pour que le cercle intersecte la bordure gauche, il faut et il suffit que la coordonnée x du centre du cercle soit inférieure à son rayon :
+
+(cercle.centre.x <= cercle.radius)
+
+*** Question 2
+
+#+BEGIN_SRC javascript
+
+  function collisionLeftBorder(circle){
+      return (circle.x <= circle.radius);
+  }
+
+  function collisionRightBorder(circle){
+      return ((main_window.width - circle.x) <= circle.radius);
+  }
+
+  function collisionTopBorder(circle){
+      return (circle.y <= circle.radius);
+  }
+
+  function collisionBottomBorder(circle){
+      return ((main_window.height - circle.y) <= circle.radius);
+  }
+
+#+END_SRC
+
+*** Question 3
+
+Il faut et il suffit que la distance entre les centres des cercles soit inférieure à la somme des rayons.
+
+ALITER :
+
+( (circle1.x - circle2.x)^2 + (circle1.y - circle2.y)^2  <=  (circle1.radius + circle2.radius)^2 )
+
+(En vrai, on va essayer de ne pas utiliser la fonction carré)
+
+#+BEGIN_SRC javascript
+  function collisionCircles(c1,c2){
+      var dx = c1.x - c2.x;
+      var dy = c1.y - c2.y;
+      var rayon = c1.radius + c2.radius;
+
+      return ((dx * dx) + (dy * dy) <= rayon*rayon);
+  }
+#+END_SRC
+
+** Exercice 2
+
+*** Question 1
+
+Si on part du principe que les coordonnées x et y sont le centre du rectangle, on doit simplement comparer :
+
+((circle.x + circle.radius) <= box.x)
+
+width/2 
+
+La collision 
+
+
+** Exercice 3
+
+Le premier jar est en fait juste un zip. On doit le dézip, et lancer la commande :
+
+#+BEGIN_SRC shell
+  java -jar ./supportGUI.jar
+#+END_SRC
+
+Ce truc ne peut pas accéder aux algorithmes dans src.
+
+Ensuite on peut modifier les fonctions algorithmes.
+
+
+
+
